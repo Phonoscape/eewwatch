@@ -11,6 +11,7 @@ using System.IO;
 using System.Text;
 
 using Bouyomi;
+using Windows.UI.Notifications;
 
 namespace eewwatch
 {
@@ -398,6 +399,8 @@ namespace eewwatch
         {
             BouyomiProcess = null;
 
+            ShowNotify(text);
+
             foreach (System.Diagnostics.Process p in System.Diagnostics.Process.GetProcesses())
             {
                 Console.WriteLine(p.ProcessName);
@@ -466,6 +469,35 @@ namespace eewwatch
             
             talk("録画を番組の終了までにしました");
             Task.Factory.StartNew(() => MessageBox.Show("録画を番組の終了までにしました。"));
+        }
+
+        private void ShowNotify(String msg)
+        {
+            var tmpl = ToastTemplateType.ToastText01;
+            var xml = ToastNotificationManager.GetTemplateContent(tmpl);
+
+            /* ToastImageAndText02の場合
+            <toast>
+                <visual>
+                    <binding template="ToastImageAndText02">
+                        <image id="1" src=""/>
+                        <text id="1"></text>
+                        <text id="2"></text>
+                    </binding>
+                </visual>
+            </toast>
+            */
+
+//            var images = xml.GetElementsByTagName("image");
+//            var src = images[0].Attributes.GetNamedItem("src");
+//            src.InnerText = "file:///" + Path.GetFullPath("images\\icon.png");
+
+            var texts = xml.GetElementsByTagName("text");
+            texts[0].AppendChild(xml.CreateTextNode(msg));
+
+            var toast = new ToastNotification(xml);
+
+            ToastNotificationManager.CreateToastNotifier("EEWWatch").Show(toast);
         }
 
         private void eewwatchmain_FormClosing(object sender, FormClosingEventArgs e)
