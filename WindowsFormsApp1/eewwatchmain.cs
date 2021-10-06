@@ -76,10 +76,12 @@ namespace eewwatch
         static int CM_RECORD_PAUSE = 153;
         static int CM_RECORDOPTION = 154;
         static int CM_RECORDEVENT = 155;
+        static int CM_RECORD_SHIFT = 158;
 
         static int INTERVAL_WAIT = 2000;
         static int INTERVAL_ACTIVE = 1000;
         static int INTERVAL_CHANGE_RECMODE = 10;
+        //static int INTERVAL_CHANGE_RECMODE = 1;
         //static int INTERVAL_CHANGE_RECMODE = 10000;
 
         public eewwatchmain()
@@ -448,7 +450,7 @@ namespace eewwatch
             // 録画ボタンの押下を送信
             //PostMessage(hwnd, WM_KEYDOWN, 0x11, 0);
             //PostMessage(hwnd, WM_KEYDOWN, VkKeyScan('r'), 0);
-            SendMessage(hwnd, WM_COMMAND, CM_RECORD, 0);
+            SendMessage(hwnd, WM_COMMAND, CM_RECORD_SHIFT, 0);
 
             talk("録画を開始しました");
             Task.Factory.StartNew(() => MessageBox.Show("録画を開始しました。"));
