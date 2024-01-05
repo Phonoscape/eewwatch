@@ -6,12 +6,10 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Speech.Synthesis;
 using System.Drawing;
-using System.Threading;
 using System.IO;
 using System.Text;
-
-using Bouyomi;
 using Windows.UI.Notifications;
+using System.Collections.Generic;
 
 namespace eewwatch
 {
@@ -50,12 +48,14 @@ namespace eewwatch
         bool Is_training;
         string Alertflg;
 
+        double maxCalcintensity;
+
         private string outputPath; 
 
         private Point normalLocation;
         private Size normalSize;
 
-        System.Diagnostics.Process TvtestProcess;
+        List<System.Diagnostics.Process> TvtestProcess;
         System.Diagnostics.Process BouyomiProcess;
 
         SpeechSynthesizer sss = null;
@@ -247,6 +247,22 @@ namespace eewwatch
                     Is_final = eew.Is_final == "" ? false : bool.Parse(eew.Is_final);
                     Alertflg = eew.Alertflg;
                     Is_training = eew.Is_training == "" ? false : bool.Parse(eew.Is_training);
+
+                    if (Calcintensity != "")
+                    {
+                        maxCalcintensity = int.Parse(Calcintensity.Substring(0, 1));
+                        if (maxCalcintensity >= 5)
+                        {
+                            if (Calcintensity.Substring(1, 1) == "強")
+                            {
+                                maxCalcintensity += 0.5;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        maxCalcintensity = 0;
+                    }
                 }
                 else
                 {
@@ -266,22 +282,13 @@ namespace eewwatch
 
         private void addList()
         {
+            double calc = 0;
+
             string[] val = new string[11];
-            val[0] = Report_id;
-            val[1] = Report_time;
-            val[2] = Report_num.ToString();
-            val[3] = Alertflg;
-            val[4] = Is_final == true ? "解除" : "継続";
-            val[5] = Region_name;
-            val[6] = Magunitude;
-            val[7] = Depth;
-            val[8] = Calcintensity;
-            val[9] = Longitude;
-            val[10] = Latitude;
 
             for (int i=0;i<listView1.Items.Count;i++)
             {
-                if ( listView1.Items[i].Text == Report_id )
+                if ( listView1.Items[i].Text == Report_id)
                 {
                     if (listView1.Items[i].SubItems[3].Text != Alertflg)
                     {
@@ -347,7 +354,22 @@ namespace eewwatch
                     }
                     else
                     {
-                        listView1.Items[i].SubItems[4].Text = Is_final == true ? "解除" : "継続";
+                        listView1.Items[i].SubItems[4].Text = Is_final == true ? "最終" : "継続";
+                    }
+
+                    if (Calcintensity != "")
+                    {
+                        calc = int.Parse(Calcintensity.Substring(0, 1));
+                        if (maxCalcintensity >= 5)
+                        {
+                            if (Calcintensity.Substring(1, 1) == "強") calc += 0.5;
+                        }
+                    }
+
+                    if (calc > maxCalcintensity)
+                    {
+                        talk("予想最大震度" + Calcintensity);
+                        maxCalcintensity = calc;
                     }
 
                     listView1.Items[i].SubItems[5].Text = Region_name;
@@ -366,6 +388,18 @@ namespace eewwatch
             {
                 Directory.CreateDirectory(outputPath + "\\log");
             }
+
+            val[0] = Report_id;
+            val[1] = Report_time;
+            val[2] = Report_num.ToString();
+            val[3] = Alertflg;
+            val[4] = Is_final == true ? "最終" : "継続";
+            val[5] = Region_name;
+            val[6] = Magunitude;
+            val[7] = Depth;
+            val[8] = Calcintensity;
+            val[9] = Longitude;
+            val[10] = Latitude;
 
             Encoding enc = Encoding.UTF8;
             StreamWriter writer = new StreamWriter(outputPath + "\\log\\" + Report_id.ToString() + ".txt", true, enc);
@@ -432,25 +466,28 @@ namespace eewwatch
         private void recTv()
         {
             // ウィンドウを探す
-            TvtestProcess = null;
+            TvtestProcess = new List<System.Diagnostics.Process>();
 
             foreach (System.Diagnostics.Process p in System.Diagnostics.Process.GetProcesses())
             {
                 //メインウィンドウのタイトルがある時だけ列挙する
                 if (p.ProcessName == "TVTest")
                 {
-                    TvtestProcess = p;
-                    break;
+                    TvtestProcess.Add(p);
                 }
             }
 
-            if (TvtestProcess == null) return;
-            IntPtr hwnd = TvtestProcess.MainWindowHandle;
+            if (TvtestProcess.Count == 0) return;
 
-            // 録画ボタンの押下を送信
-            //PostMessage(hwnd, WM_KEYDOWN, 0x11, 0);
-            //PostMessage(hwnd, WM_KEYDOWN, VkKeyScan('r'), 0);
-            SendMessage(hwnd, WM_COMMAND, CM_RECORD_SHIFT, 0);
+            foreach (var p in TvtestProcess)
+            {
+                IntPtr hwnd = p.MainWindowHandle;
+
+                // 録画ボタンの押下を送信
+                //PostMessage(hwnd, WM_KEYDOWN, 0x11, 0);
+                //PostMessage(hwnd, WM_KEYDOWN, VkKeyScan('r'), 0);
+                SendMessage(hwnd, WM_COMMAND, CM_RECORD_SHIFT, 0);
+            }
 
             talk("録画を開始しました");
             Task.Factory.StartNew(() => MessageBox.Show("録画を開始しました。"));
@@ -463,14 +500,20 @@ namespace eewwatch
         {
             recModeTimer.Stop();
 
-            if (TvtestProcess == null) return;
-            IntPtr hwnd = TvtestProcess.MainWindowHandle;
+            if (TvtestProcess.Count == 0) return;
 
-            // 録画ボタンの押下を送信
-            SendMessage(hwnd, WM_COMMAND, CM_RECORDEVENT, 0);
-            
+            foreach (var p in TvtestProcess)
+            {
+                IntPtr hwnd = p.MainWindowHandle;
+
+                // 録画ボタンの押下を送信
+                SendMessage(hwnd, WM_COMMAND, CM_RECORDEVENT, 0);
+            }
+
             talk("録画を番組の終了までにしました");
             Task.Factory.StartNew(() => MessageBox.Show("録画を番組の終了までにしました。"));
+
+            TvtestProcess.Clear();
         }
 
         private void ShowNotify(String msg)
@@ -504,6 +547,8 @@ namespace eewwatch
 
         private void eewwatchmain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            web.Dispose();
+
             if (this.WindowState == FormWindowState.Normal)
             {
                 EEWWatch.Properties.Settings.Default.Form_Location = this.Location;
