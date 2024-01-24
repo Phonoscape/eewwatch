@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 /*
 
@@ -8,7 +7,7 @@ using Newtonsoft.Json;
     {"result":{"status":"success","message": "","is_auth":true},"report_time":"2018/10/26 03:36:42","region_code":"","request_time":"20181026033646","region_name":"宮城県沖","longitude":"142","is_cancel":false,"depth":"40km","calcintensity":"4","is_final":false,"is_training":false,"latitude":"38.2","origin_time":"20181026033608","security":{"realm":"/kyoshin_monitor/static/jsondata/eew_est/","hash":"b61e4d95a8c42e004665825c098a6de4"},"magunitude":"5.8","report_num":"11","request_hypo_type":"eew","report_id":"20181026033619","alertflg":"警報"}
  */
 
-    public class Result
+public class Result
     {
         [JsonProperty("status")]
         public string Status { get; set; }
