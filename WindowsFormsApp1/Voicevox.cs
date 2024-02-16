@@ -8,7 +8,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using Windows.Media.Protection.PlayReady;
 
 namespace Voicevox
 {
@@ -35,10 +34,13 @@ namespace Voicevox
         public void Init()
         {
             isReady = ServiceCheckAsync();
-            var list = ListSpeaker();
-            speaker = list["ずんだもん_ノーマル"];
-            //isReady = SelectSpeakerAsync("ずんだもん", "ノーマル", speaker);
-            SettingPreset();
+            if (isReady)
+            {
+                var list = ListSpeaker();
+                speaker = list["ずんだもん_ノーマル"];
+                //isReady = SelectSpeakerAsync("ずんだもん", "ノーマル", speaker);
+                SettingPreset();
+            }
         }
 
         private bool ServiceCheckAsync()

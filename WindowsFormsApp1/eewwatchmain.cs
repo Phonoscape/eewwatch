@@ -80,9 +80,9 @@ namespace eewwatch
         static int CM_RECORDEVENT = 155;
         static int CM_RECORD_SHIFT = 158;
 
-        static int INTERVAL_WAIT = 2000;
-        static int INTERVAL_ACTIVE = 1000;
-        static int INTERVAL_CHANGE_RECMODE = 10;
+        static int INTERVAL_WAIT = 2000;        // ms
+        static int INTERVAL_ACTIVE = 1000;      // ms
+        static int INTERVAL_CHANGE_RECMODE = 5; // min
 
         private int talktype = 1;
 
@@ -262,12 +262,23 @@ namespace eewwatch
                 Message = "データがありません";
                 msg = "";
             }
+            catch
+            {
+                Message = "データがありません";
+                msg = "";
+            }
             return msg;
         }
 
         private void SetValue(string msg)
-        { 
-            eew = JsonConvert.DeserializeObject<Eew>(msg);
+        {
+            try
+            {
+                eew = JsonConvert.DeserializeObject<Eew>(msg);
+            }
+            catch {
+                return;
+            }
 
             Message = eew.Result.Message;
             Report_time = eew.Report_time;
@@ -549,11 +560,11 @@ namespace eewwatch
                 SendMessage(hwnd, WM_COMMAND, CM_RECORD_SHIFT, 0);
             }
 
-            talk("録画を開始しました");
-            Task.Factory.StartNew(() => MessageBox.Show("録画を開始しました。"));
-
             recModeTimer.Interval = INTERVAL_CHANGE_RECMODE * 60 * 1000;
             recModeTimer.Start();
+
+            talk("録画を開始しました");
+            Task.Factory.StartNew(() => MessageBox.Show("録画を開始しました。"));
         }
 
         private void recModeTimer_Tick(object sender, EventArgs e)

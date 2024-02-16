@@ -40,9 +40,9 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.talkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.speechSynthesizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bouyomichanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.voicevoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.speechSynthesizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -58,10 +58,10 @@
             // statusStrip1
             // 
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.statusStrip1.Location = new System.Drawing.Point(0, 540);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 821);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 15, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(963, 22);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 22, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(1444, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -69,9 +69,10 @@
             // 
             this.panel1.Controls.Add(this.splitContainer1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 24);
+            this.panel1.Location = new System.Drawing.Point(0, 81);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(963, 516);
+            this.panel1.Size = new System.Drawing.Size(2166, 1151);
             this.panel1.TabIndex = 4;
             // 
             // splitContainer1
@@ -79,6 +80,7 @@
             this.splitContainer1.DataBindings.Add(new System.Windows.Forms.Binding("SplitterDistance", global::EEWWatch.Properties.Settings.Default, "Splitter_Distance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -89,8 +91,9 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(963, 516);
+            this.splitContainer1.Size = new System.Drawing.Size(2166, 1151);
             this.splitContainer1.SplitterDistance = global::EEWWatch.Properties.Settings.Default.Splitter_Distance;
+            this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 2;
             // 
             // listView1
@@ -98,9 +101,10 @@
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(963, 318);
+            this.listView1.Size = new System.Drawing.Size(2166, 1086);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -109,9 +113,10 @@
             // 
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox1.Location = new System.Drawing.Point(0, 0);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(963, 194);
+            this.textBox1.Size = new System.Drawing.Size(2166, 59);
             this.textBox1.TabIndex = 1;
             // 
             // recModeTimer
@@ -120,12 +125,14 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.talkToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(963, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(2166, 54);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -134,13 +141,13 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(98, 48);
             this.fileToolStripMenuItem.Text = "ファイル(&F)";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(171, 34);
             this.exitToolStripMenuItem.Text = "終了(&X)";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.終了XToolStripMenuItem_Click);
             // 
@@ -151,40 +158,41 @@
             this.bouyomichanToolStripMenuItem,
             this.voicevoxToolStripMenuItem});
             this.talkToolStripMenuItem.Name = "talkToolStripMenuItem";
-            this.talkToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.talkToolStripMenuItem.Size = new System.Drawing.Size(57, 48);
             this.talkToolStripMenuItem.Text = "Talk";
+            // 
+            // speechSynthesizerToolStripMenuItem
+            // 
+            this.speechSynthesizerToolStripMenuItem.Name = "speechSynthesizerToolStripMenuItem";
+            this.speechSynthesizerToolStripMenuItem.Size = new System.Drawing.Size(260, 34);
+            this.speechSynthesizerToolStripMenuItem.Text = "SpeechSynthesizer";
+            this.speechSynthesizerToolStripMenuItem.Click += new System.EventHandler(this.speechSynthesizerToolStripMenuItem_Click);
             // 
             // bouyomichanToolStripMenuItem
             // 
             this.bouyomichanToolStripMenuItem.Name = "bouyomichanToolStripMenuItem";
-            this.bouyomichanToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.bouyomichanToolStripMenuItem.Size = new System.Drawing.Size(260, 34);
             this.bouyomichanToolStripMenuItem.Text = "Bouyomi-chan";
             this.bouyomichanToolStripMenuItem.Click += new System.EventHandler(this.bouyomichanToolStripMenuItem_Click);
             // 
             // voicevoxToolStripMenuItem
             // 
             this.voicevoxToolStripMenuItem.Name = "voicevoxToolStripMenuItem";
-            this.voicevoxToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.voicevoxToolStripMenuItem.Size = new System.Drawing.Size(260, 34);
             this.voicevoxToolStripMenuItem.Text = "Voicevox";
             this.voicevoxToolStripMenuItem.Click += new System.EventHandler(this.voicevoxToolStripMenuItem_Click);
             // 
-            // speechSynthesizerToolStripMenuItem
-            // 
-            this.speechSynthesizerToolStripMenuItem.Name = "speechSynthesizerToolStripMenuItem";
-            this.speechSynthesizerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.speechSynthesizerToolStripMenuItem.Text = "SpeechSynthesizer";
-            this.speechSynthesizerToolStripMenuItem.Click += new System.EventHandler(this.speechSynthesizerToolStripMenuItem_Click);
-            // 
             // eewwatchmain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(963, 562);
+            this.ClientSize = new System.Drawing.Size(1444, 843);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Location = new System.Drawing.Point(0, 17);
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "eewwatchmain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "EewWatch";
