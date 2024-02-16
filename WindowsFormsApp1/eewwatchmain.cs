@@ -219,24 +219,6 @@ namespace eewwatch
                     10);
             }
 
-            var res = GetWeb(filename);
-            SetValue(res);
-
-            textBox1.Clear();
-            textBox1.Text = res;
-
-            if (Report_id != "")
-            {
-                CheckSpeak();
-                AddList();
-                Report_id_old = Report_id;
-            }
-            else if (Report_id_old != "")
-            {
-                talk("緊急地震速報の通知が終了しました");
-                Report_id_old = "";
-            }
-
             statusStrip1.Items[0].Text = string.Format("{0:0000}/{1:00}/{2:00} {3:00}:{4:00}:{5:00}",
                 date.Year,
                 date.Month,
@@ -245,7 +227,32 @@ namespace eewwatch
                 date.Minute,
                 date.Second);
 
-            statusStrip1.Items[1].Text = warn > 0 ? "入電中" : "待機中";
+            var res = GetWeb(filename);
+            if (res != string.Empty)
+            {
+                SetValue(res);
+
+                textBox1.Clear();
+                textBox1.Text = res;
+
+                if (Report_id != "")
+                {
+                    CheckSpeak();
+                    AddList();
+                    Report_id_old = Report_id;
+                }
+                else if (Report_id_old != "")
+                {
+                    talk("緊急地震速報の通知が終了しました");
+                    Report_id_old = "";
+                }
+
+                statusStrip1.Items[1].Text = warn > 0 ? "入電中" : "待機中";
+            }
+            else
+            {
+                statusStrip1.Items[1].Text = "データ取得エラー";
+            }
 
             timer1.Interval = interval;
             timer1.Start();
