@@ -1,16 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Speech.Synthesis;
-using System.Drawing;
-using System.IO;
-using System.Text;
-using Windows.UI.Notifications;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Net.Http;
+using System.Speech.Synthesis;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Windows.UI.Notifications;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace eewwatch
 {
@@ -163,19 +163,42 @@ namespace eewwatch
                 vvSpeaker = "ずんだもん_ノーマル";
             }
 
-            toolStripMenuItem4.DropDownItems.Clear();
-            foreach ( var item in list )
+            voiceListToolStripMenuItem.DropDownItems.Clear();
+            foreach (var item in list)
             {
-                var dditem = toolStripMenuItem4.DropDownItems.Add( item.Key );
-                dditem.Click += Dditem_Click;
-            }
+                var name = item.Key;
+                var style = name.Split('_');
 
-            foreach ( ToolStripMenuItem item in toolStripMenuItem4.DropDownItems)
-            {
-                if (item.Text == vvSpeaker)
+                ToolStripMenuItem toolStripMenuItem = null;
+                foreach (ToolStripMenuItem ddItem in voiceListToolStripMenuItem.DropDownItems)
                 {
-                    item.Checked = true;
-                    break;
+                    if (ddItem.Text == style[0])
+                    {
+                        toolStripMenuItem = ddItem;
+                        break;
+                    }
+                }
+
+                ToolStripMenuItem subItem = null;
+                if (toolStripMenuItem != null)
+                {
+                    subItem = (ToolStripMenuItem)toolStripMenuItem.DropDownItems.Add(style[1]);
+                    subItem.Click += Dditem_Click;
+                    subItem.Tag = name;
+                }
+                else
+                {
+                    var dditem = voiceListToolStripMenuItem.DropDownItems;
+                    var newItem = (ToolStripMenuItem)dditem.Add(style[0]);
+                    subItem = (ToolStripMenuItem)newItem.DropDownItems.Add(style[1]);
+                    subItem.Click += Dditem_Click;
+                    subItem.Tag = name;
+                }
+
+                if (name == vvSpeaker)
+                {
+                    ((ToolStripMenuItem)subItem.OwnerItem).Checked = true;
+                    subItem.Checked = true;
                 }
             }
 
@@ -220,7 +243,7 @@ namespace eewwatch
         private void SetTalkMenu(int talktype)
         {
             speechSynthesizerToolStripMenuItem.Checked = false;
-            toolStripMenuItem4.Checked = false;
+            voiceListToolStripMenuItem.Checked = false;
             bouyomichanToolStripMenuItem.Checked = false;
 
             switch (talktype)
@@ -847,14 +870,21 @@ namespace eewwatch
         private void Dditem_Click(object sender, EventArgs e)
         {
             var item = (ToolStripMenuItem)sender;
+            var owner = (ToolStripMenuItem)item.OwnerItem;
 
-            foreach(ToolStripMenuItem itemAll in toolStripMenuItem4.DropDownItems)
+            foreach(ToolStripMenuItem itemAll in voiceListToolStripMenuItem.DropDownItems)
             {
                 itemAll.Checked = false;
+                foreach (ToolStripMenuItem subItemAll in itemAll.DropDownItems)
+                {
+                    subItemAll.Checked = false;
+                }
             }
 
             item.Checked = true;
-            vvSpeaker = item.Text;
+            owner.Checked = true;
+
+            vvSpeaker = (string)item.Tag;
 
             Voicevox.Voicevox vv = new Voicevox.Voicevox();
             vv.Init(vvSpeaker, vvTalkSpeed);

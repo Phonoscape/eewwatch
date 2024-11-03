@@ -36,7 +36,7 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.recModeTimer = new System.Windows.Forms.Timer(this.components);
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.talkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,7 +46,7 @@
             this.FastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SlowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.voiceListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tvTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contEndToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,7 +56,7 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
+            this.mainMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // timer1
@@ -127,19 +127,19 @@
             // 
             this.recModeTimer.Tick += new System.EventHandler(this.recModeTimer_Tick);
             // 
-            // menuStrip1
+            // mainMenuStrip
             // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mainMenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.talkToolStripMenuItem,
             this.recToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(963, 24);
-            this.menuStrip1.TabIndex = 5;
-            this.menuStrip1.Text = "menuStrip1";
+            this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
+            this.mainMenuStrip.Name = "mainMenuStrip";
+            this.mainMenuStrip.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            this.mainMenuStrip.Size = new System.Drawing.Size(963, 24);
+            this.mainMenuStrip.TabIndex = 5;
+            this.mainMenuStrip.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
@@ -186,7 +186,7 @@
             this.FastToolStripMenuItem,
             this.SlowToolStripMenuItem,
             this.toolStripMenuItem2,
-            this.toolStripMenuItem4});
+            this.voiceListToolStripMenuItem});
             this.voiceVoxToolStripMenuItem.Name = "voiceVoxToolStripMenuItem";
             this.voiceVoxToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.voiceVoxToolStripMenuItem.Text = "VoiceVox";
@@ -210,11 +210,11 @@
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(177, 6);
             // 
-            // toolStripMenuItem4
+            // voiceListToolStripMenuItem
             // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
-            this.toolStripMenuItem4.Text = "VoiceList";
+            this.voiceListToolStripMenuItem.Name = "voiceListToolStripMenuItem";
+            this.voiceListToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.voiceListToolStripMenuItem.Text = "VoiceList";
             // 
             // recToolStripMenuItem
             // 
@@ -251,9 +251,9 @@
             this.ClientSize = new System.Drawing.Size(963, 562);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.mainMenuStrip);
             this.Location = new System.Drawing.Point(0, 17);
-            this.MainMenuStrip = this.menuStrip1;
+            this.MainMenuStrip = this.mainMenuStrip;
             this.Name = "eewwatchmain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "EewWatch";
@@ -265,8 +265,8 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.mainMenuStrip.ResumeLayout(false);
+            this.mainMenuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -281,7 +281,7 @@
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Timer recModeTimer;
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.MenuStrip mainMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem talkToolStripMenuItem;
@@ -295,7 +295,7 @@
         private System.Windows.Forms.ToolStripMenuItem FastToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SlowToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem voiceListToolStripMenuItem;
     }
 }
 
