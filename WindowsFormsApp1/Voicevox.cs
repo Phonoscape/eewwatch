@@ -13,33 +13,91 @@ namespace Voicevox
 {
     internal class Voicevox
     {
-        string gobi = "なのだ";
+        private readonly Dictionary<string, string> gobiList = new Dictionary<string, string>()
+        {
+            {"ずんだもん", "なのだ"}
+        };
 
-        private int speaker = 3;
+        private readonly Dictionary<string, double> intnationList = new Dictionary<string, double>()
+        {
+            {"Voidoll", 0.0 }
+        };
+
+        private readonly double[] talkSpeedList = { 1.25, 0.90 };
+        private readonly string styleName = "緊急用";
+
+        private string gobi;
+
+        private string speaker;
+        private int speakerID = 3;
         private int presetID = 0;
+        private double intonation = 1.0;
 
         private string URL = "http://127.0.0.1:50021/";
         //private string URL = "http://127.0.0.1:50020/";
         private HttpClient web;
+        private Dictionary<string, int> speakerList;
 
         protected bool isReady { get; set; } = false;
 
         public Voicevox()
         {
             web = new HttpClient();
+            web.Timeout = TimeSpan.FromSeconds(5);
+
             //Initは使用側で呼ぶ。
             //Init();
         }
 
-        public void Init()
+        public void Init(string sp,int vvTalkSpeed)
         {
             isReady = ServiceCheckAsync();
             if (isReady)
             {
-                var list = ListSpeaker();
-                speaker = list["ずんだもん_ノーマル"];
-                //isReady = SelectSpeakerAsync("ずんだもん", "ノーマル", speaker);
-                SettingPreset();
+                speakerList = ListSpeaker();
+
+                if (speakerList.Count > 0)
+                {
+                    if (speakerList.ContainsKey(sp))
+                    {
+                        speaker = sp;
+                    }
+                    else
+                    {
+                        speaker = "ずんだもん_ノーマル";
+                        //isReady = SelectSpeakerAsync("ずんだもん", "ノーマル", speaker);
+                    }
+
+                    speakerID = speakerList[sp];
+
+                    vvTalkSpeed = vvTalkSpeed < talkSpeedList.Length ? vvTalkSpeed: 0;
+
+                    intonation = 1.0;
+                    foreach (var item in intnationList)
+                    {
+                        if (speaker.Contains(item.Key))
+                        {
+                            intonation = item.Value;
+                            break;
+                        }
+                    }
+
+                    SetPreset(speakerID, talkSpeedList[vvTalkSpeed]);
+
+                    gobi = string.Empty;
+                    foreach (var item in gobiList)
+                    {
+                        if (speaker.Contains(item.Key))
+                        {
+                            gobi = item.Value;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    isReady = false;
+                }
             }
         }
 
@@ -76,7 +134,7 @@ namespace Voicevox
             if (isReady)
             {
                 //var query = QueryAsync(message);
-                
+
                 var query = AudioQueryFromPresetAsync(message + gobi, presetID);
 
                 Synthesis(query);
@@ -88,7 +146,7 @@ namespace Voicevox
             StringContent content = new StringContent("", Encoding.UTF8, "application/json");
 
             string text = "text=" + HttpUtility.UrlEncode(message);
-            string speak = "speaker=" + speaker;
+            string speak = "speaker=" + speakerID;
             string opt = "audio_query?" + speak + "&" + text;
 
             try
@@ -136,7 +194,7 @@ namespace Voicevox
 
         private void Synthesis(string query)
         {
-            string speak = "speaker=" + speaker;
+            string speak = "speaker=" + speakerID;
             string opt = "synthesis?" + speak;
             var content = new StringContent(query, Encoding.UTF8, "application/json");
 
@@ -187,68 +245,83 @@ namespace Voicevox
             {
                 string opt = "speakers";
 
-                var res1 = web.GetStringAsync(URL + opt);
-                res1.Wait();
-                var res2 = res1.Result;
-
-                //res = res.Substring(1, res.Length - 1);
-                Debug.Write(res2);
-
-                //var json = JsonConvert.DeserializeObject<Speakers>(res);
-
-                var j1 = JArray.Parse(res2);
-
-                foreach (var j2 in j1)
+                try
                 {
-                    var j3 = j2.ToObject<Speaker>();
-                    foreach (var j4 in j3.styles)
+                    var res1 = web.GetStringAsync(URL + opt);
+                    res1.Wait();
+                    var res2 = res1.Result;
+
+                    //res = res.Substring(1, res.Length - 1);
+                    Debug.Write(res2);
+
+                    //var json = JsonConvert.DeserializeObject<Speakers>(res);
+
+                    var j1 = JArray.Parse(res2);
+
+                    foreach (var j2 in j1)
                     {
-                        result.Add(j3.name + "_" + j4.name, int.Parse(j4.id));
+                        var j3 = j2.ToObject<Speaker>();
+                        foreach (var j4 in j3.styles)
+                        {
+                            result.Add(j3.name + "_" + j4.name, int.Parse(j4.id));
+                            Debug.WriteLine("{0} {1} {2}",j4.id, j3.name, j4.name);
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
                 }
             }
 
             return result;
         }
 
-        public bool SelectSpeakerAsync(string name, string style,int id)
+        private bool SelectSpeakerAsync(string name, string style,int id)
         {
+            bool fCheck = false;
+
             if (isReady)
             {
-                bool fCheck = false;
                 string opt = "speakers";
 
-                var res1 = web.GetStringAsync(URL + opt);
-                res1.Wait();
-                var res2 = res1.Result;
-
-                //res = res.Substring(1, res.Length - 1);
-                Debug.Write(res2);
-
-                //var json = JsonConvert.DeserializeObject<Speakers>(res);
-
-                var j1 = JArray.Parse(res2);
-
-                foreach (var j2 in j1)
+                try
                 {
-                    var j3 = j2.ToObject<Speaker>();
+                    var res1 = web.GetStringAsync(URL + opt);
+                    res1.Wait();
+                    var res2 = res1.Result;
 
-                    if ( j3.name == name)
+                    //res = res.Substring(1, res.Length - 1);
+                    Debug.Write(res2);
+
+                    //var json = JsonConvert.DeserializeObject<Speakers>(res);
+
+                    var j1 = JArray.Parse(res2);
+
+                    foreach (var j2 in j1)
                     {
-                        foreach (var j4 in j3.styles)
+                        var j3 = j2.ToObject<Speaker>();
+
+                        if (j3.name == name)
                         {
-                            if (j4.name == style)
+                            foreach (var j4 in j3.styles)
                             {
-                                id = int.Parse(j4.id);
-                                fCheck = true;
-                                return true;
+                                if (j4.name == style)
+                                {
+                                    id = int.Parse(j4.id);
+                                    fCheck = true;
+                                    break;
+                                }
                             }
                         }
                     }
                 }
-                
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             }
-            return false;
+            return fCheck;
         }
 
         public class Preset
@@ -261,87 +334,100 @@ namespace Voicevox
             public double pitchScale { get; set; } = 0.0;
             public double intonationScale { get; set; } = 1.0;
             public double volumeScale { get; set; } = 1.0;
-            public double prePhonemeLength { get; set; } = 0.1;
-            public double postPhonemeLength { get; set; } = 0.1;
+            public double prePhonemeLength { get; set; } = 0.0;
+            public double postPhonemeLength { get; set; } = 0.0;
         }
 
-        public class Presets
+        public async void SetPreset(int id,double speedScale)
         {
-            IList<Preset> presets;
-        }
-
-        public async void SettingPreset()
-        {
-            int id = 0;
-            const string presetName = "緊急用";
-
             Preset preset = new Preset();
 
-            var res = SearchPreset(presetName, id);
+            preset.name = styleName;
+            preset.style_id = id;
+            preset.speaker_uuid = Guid.NewGuid().ToString();
+            preset.speedScale = speedScale;
+            preset.intonationScale = intonation;
 
-            if (!res)
-            {
-                //preset.name = HttpUtility.UrlEncode(presetName);
-                preset.name = presetName;
-                preset.style_id = speaker;
-                preset.speaker_uuid = Guid.NewGuid().ToString();
-                preset.speedScale = 1.25;
-
-                SetPreset(preset, presetID);
-            }
-            else
-            {
-                presetID = id;
-            }
+            AccessPreset(preset, presetID);
         }
 
-        public void SetPreset(Preset preset,int id)
+        private bool AccessPreset(Preset preset,int id)
         {
             if (isReady)
             {
+                string opt = string.Empty;
+
+                var res = SearchPreset(preset.name, id);
+
+                if (res)
+                {
+                    opt = "update_preset";
+                }
+                else
+                {
+                    opt = "add_preset";
+                }
+
                 var json = JsonConvert.SerializeObject(preset);
 
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                string opt = "add_preset";
-                var res1 = web.PostAsync(URL + opt, content);
-                res1.Wait();
-                var res2 = res1.Result;
-                if (res2.StatusCode != System.Net.HttpStatusCode.InternalServerError)
+                try
                 {
-                    var res3 = res2.Content.ReadAsStringAsync();
-                    res3.Wait();
+                    var res1 = web.PostAsync(URL + opt, content);
+                    res1.Wait();
+                    var res2 = res1.Result;
+                    if (res2.StatusCode != System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        var res3 = res2.Content.ReadAsStringAsync();
+                        res3.Wait();
 
-                    id = int.Parse(res3.Result);
+                        id = int.Parse(res3.Result);
+                    }
+                    content.Dispose();
+                } 
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    return false;
                 }
-                content.Dispose();
             }
+
+            return true;
         }
 
-        public bool SearchPreset(string name, int id)
+        private bool SearchPreset(string name, int id)
         {
-            id = 1;
+            id = 0;
 
             if (isReady)
             {
                 string opt = "presets";
-                var res1 = web.GetStringAsync(URL + opt);
-                res1.Wait();
-                var res2 = res1.Result;
 
-                Debug.Write(res2);
-
-                var j1 = JArray.Parse(res2);
-
-                foreach (var j2 in j1)
+                try
                 {
-                    var j3 = j2.ToObject<Preset>();
+                    var res1 = web.GetStringAsync(URL + opt);
+                    res1.Wait();
+                    var res2 = res1.Result;
 
-                    if (j3.name == name)
+                    Debug.Write(res2);
+
+                    var j1 = JArray.Parse(res2);
+
+                    foreach (var j2 in j1)
                     {
-                        id = j3.style_id;
-                        return true;
+                        var j3 = j2.ToObject<Preset>();
+
+                        if (j3.name == name)
+                        {
+                            id = j3.id;
+                            return true;
+                        }
                     }
+                }
+                catch (Exception e)
+                { 
+                    Debug.WriteLine(e); 
                 }
             }
             return false;

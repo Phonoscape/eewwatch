@@ -9,7 +9,7 @@
       <Value Profile="(Default)">1066, 562</Value>
     </Setting>
     <Setting Name="Splitter_Distance" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1086</Value>
+      <Value Profile="(Default)">485</Value>
     </Setting>
     <Setting Name="Column1" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60</Value>
@@ -48,6 +48,12 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="Type" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Speaker" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TalkSpeed" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>

@@ -57,6 +57,9 @@ namespace eewwatch
         private Point normalLocation;
         private Size normalSize;
 
+        private string vvSpeaker;
+        private int vvTalkSpeed;
+
         List<System.Diagnostics.Process> TvtestProcess;
         System.Diagnostics.Process BouyomiProcess;
 
@@ -86,10 +89,24 @@ namespace eewwatch
 
         private int talktype = 1;
 
+        private int tvtest_Rec = 1;
+        private int tvtest_recend = 1;
+
         //static int INTERVAL_CHANGE_RECMODE = 1;
         //static int INTERVAL_CHANGE_RECMODE = 10000;
 
-        private bool _debug = false; 
+        private bool _debug = false;
+
+        private List<string> kinken = new List<string>() { 
+            "宮城", 
+            "山形", 
+            "福島",
+            "秋田",
+            "岩手",
+            "三陸"
+        };
+
+        private readonly string demoMsg = "緊急地震速報待機中";
 
         public eewwatchmain()
         {
@@ -132,8 +149,43 @@ namespace eewwatch
             listView1.Columns[9].Width = EEWWatch.Properties.Settings.Default.Column10;
             listView1.Columns[10].Width = EEWWatch.Properties.Settings.Default.Column11;
 
+            listView1.FullRowSelect = true;
+
+            vvSpeaker = EEWWatch.Properties.Settings.Default.Speaker;
+            vvTalkSpeed = EEWWatch.Properties.Settings.Default.TalkSpeed;
+
+            Voicevox.Voicevox vv = new Voicevox.Voicevox();
+            vv.Init(vvSpeaker, vvTalkSpeed);
+            var list = vv.ListSpeaker();
+
+            if (vvSpeaker == null || vvSpeaker.Length == 0)
+            {
+                vvSpeaker = "ずんだもん_ノーマル";
+            }
+
+            toolStripMenuItem4.DropDownItems.Clear();
+            foreach ( var item in list )
+            {
+                var dditem = toolStripMenuItem4.DropDownItems.Add( item.Key );
+                dditem.Click += Dditem_Click;
+            }
+
+            foreach ( ToolStripMenuItem item in toolStripMenuItem4.DropDownItems)
+            {
+                if (item.Text == vvSpeaker)
+                {
+                    item.Checked = true;
+                    break;
+                }
+            }
+
+            SetTalkSpeedMenu(vvTalkSpeed);
+
             talktype = EEWWatch.Properties.Settings.Default.Talk;
             SetTalkMenu(talktype);
+
+            tvTestToolStripMenuItem.Checked = true;
+            contEndToolStripMenuItem.Checked = true;
 
             outputPath = Application.StartupPath;
             logPath = outputPath + "\\log\\";
@@ -168,7 +220,7 @@ namespace eewwatch
         private void SetTalkMenu(int talktype)
         {
             speechSynthesizerToolStripMenuItem.Checked = false;
-            voicevoxToolStripMenuItem.Checked = false;
+            toolStripMenuItem4.Checked = false;
             bouyomichanToolStripMenuItem.Checked = false;
 
             switch (talktype)
@@ -177,7 +229,7 @@ namespace eewwatch
                     bouyomichanToolStripMenuItem.Checked = true;
                     break;
                 case 2:
-                    voicevoxToolStripMenuItem.Checked = true;
+                    voiceVoxToolStripMenuItem.Checked = true;
                     break;
                 default:
                 case 0:
@@ -323,6 +375,8 @@ namespace eewwatch
         {
             double calc = 0;
 
+            string talkmsg = string.Empty;
+
             for (int i = 0; i < listView1.Items.Count; i++)
             {
                 if (listView1.Items[i].Text == Report_id)
@@ -409,17 +463,29 @@ namespace eewwatch
 
             if (Is_training)
             {
-                talk(Region_name + "訓練の緊急地震速報、" + Alertflg + "、が発表されました");
+                talkmsg = Region_name + "訓練の緊急地震速報、" + Alertflg + "、が発表されました";
             }
             else
             {
-                talk(Region_name + "でマグニチュード" + Magunitude + "、予想最大震度" + Calcintensity + "の" + Alertflg + "が発表されました");
+                string msg = string.Empty;
+
+                    foreach (var reg in kinken)
+                    {
+                        if (Region_name.Contains(reg))
+                        {
+                            msg = "揺れ注意。";
+                        }
+                    }
+
+                talkmsg = msg + Region_name + "でマグニチュード" + Magunitude + "、予想最大震度" + Calcintensity + "の" + Alertflg + "が発表されました";
 
                 if (Alertflg == "警報")
                 {
                     recTv();
                 }
             }
+
+            talk(talkmsg);
         }
 
         private void AddList()
@@ -493,7 +559,7 @@ namespace eewwatch
             val[10] = Latitude;
 
             // listView1.Items.Add(new ListViewItem(val));
-            listView1.Items.Insert(0, new ListViewItem(val));
+            ListViewItem item = listView1.Items.Insert(0, new ListViewItem(val));
         }
 
         private void talk(string text)
@@ -504,38 +570,35 @@ namespace eewwatch
 
             ShowNotify(text);
 
-            foreach (System.Diagnostics.Process p in System.Diagnostics.Process.GetProcesses())
-            {
-                Console.WriteLine(p.ProcessName);
-                //メインウィンドウのタイトルがある時だけ列挙する
-                if (p.ProcessName == "BouyomiChan")
-                {
-                    BouyomiProcess = p;
-                    break;
-                }
-            }
-
-
             switch(talktype)
             {
                 case 0:
-                    if (BouyomiProcess == null)
-                    {
-                        sss = new SpeechSynthesizer();
+                    sss = new SpeechSynthesizer();
 
-                        sss.SelectVoiceByHints(VoiceGender.Female);
-                        sss.Rate = 2;
+                    sss.SelectVoiceByHints(VoiceGender.Female);
+                    sss.Rate = 2;
 
-                        sss.SpeakAsync(text);
-                    }
+                    sss.SpeakAsync(text);
                     break;
                 case 1:
+                    foreach (System.Diagnostics.Process p in System.Diagnostics.Process.GetProcesses())
+                    {
+                        Console.WriteLine(p.ProcessName);
+                        //メインウィンドウのタイトルがある時だけ列挙する
+                        if (p.ProcessName == "BouyomiChan")
+                        {
+                            BouyomiProcess = p;
+                            break;
+                        }
+                    }
+
                     Bouyomi.Bouyomi bouyomi = new Bouyomi.Bouyomi();
                     bouyomi.Talk(text);
                     break;
                 case 2:
                     Voicevox.Voicevox vv = new Voicevox.Voicevox();
-                    vv.Init();
+                    vv.Init(vvSpeaker, vvTalkSpeed);
+                    //vv.SelectPreset(vvTalkSpeed);
                     vv.Talk(text);
                     break;
             }
@@ -570,8 +633,14 @@ namespace eewwatch
             recModeTimer.Interval = INTERVAL_CHANGE_RECMODE * 60 * 1000;
             recModeTimer.Start();
 
-            talk("録画を開始しました");
-            Task.Factory.StartNew(() => MessageBox.Show("録画を開始しました。"));
+            if (tvTestToolStripMenuItem.Checked)
+            {
+                talk("録画を開始しました");
+                if (contEndToolStripMenuItem.Checked)
+                {
+                    Task.Factory.StartNew(() => MessageBox.Show("録画を開始しました。"));
+                }
+            }
         }
 
         private void recModeTimer_Tick(object sender, EventArgs e)
@@ -681,6 +750,8 @@ namespace eewwatch
             EEWWatch.Properties.Settings.Default.Column11 = listView1.Columns[10].Width;
 
             EEWWatch.Properties.Settings.Default.Talk = talktype;
+            EEWWatch.Properties.Settings.Default.Speaker = vvSpeaker;
+            EEWWatch.Properties.Settings.Default.TalkSpeed = vvTalkSpeed;
 
             EEWWatch.Properties.Settings.Default.Save();
         }
@@ -716,11 +787,6 @@ namespace eewwatch
 
         }
 
-        private void 終了XToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void speechSynthesizerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             talktype = 0;
@@ -737,6 +803,72 @@ namespace eewwatch
         {
             talktype = 2;
             SetTalkMenu(talktype);
+        }
+
+        private void tvTestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tvTestToolStripMenuItem.Checked = tvTestToolStripMenuItem.Checked ? false : true;
+        }
+
+        private void contEndToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            contEndToolStripMenuItem.Checked = contEndToolStripMenuItem.Checked ? false : true;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void SpeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (sender == FastToolStripMenuItem)
+            {
+                vvTalkSpeed = 0;
+            }
+            else
+            {
+                vvTalkSpeed = 1;
+            }
+
+            SetTalkSpeedMenu(vvTalkSpeed);
+
+            Voicevox.Voicevox vv = new Voicevox.Voicevox();
+            vv.Init(vvSpeaker, vvTalkSpeed);
+            vv.Talk(demoMsg);
+        }
+
+        private void SetTalkSpeedMenu(int vvTalkSpeed)
+        {
+            FastToolStripMenuItem.Checked = vvTalkSpeed == 0;
+            SlowToolStripMenuItem.Checked = vvTalkSpeed == 1;
+        }
+
+        private void Dditem_Click(object sender, EventArgs e)
+        {
+            var item = (ToolStripMenuItem)sender;
+
+            foreach(ToolStripMenuItem itemAll in toolStripMenuItem4.DropDownItems)
+            {
+                itemAll.Checked = false;
+            }
+
+            item.Checked = true;
+            vvSpeaker = item.Text;
+
+            Voicevox.Voicevox vv = new Voicevox.Voicevox();
+            vv.Init(vvSpeaker, vvTalkSpeed);
+            vv.Talk(demoMsg);
+        }
+
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            var sels = ((ListView)sender).SelectedItems;
+            var sel = sels[0];
+
+            var filename = logPath + sel.SubItems[0].Text + ".txt";
+
+            System.Diagnostics.Process.Start(filename);
         }
     }
 }
