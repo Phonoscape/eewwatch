@@ -49,7 +49,7 @@ namespace EEWWatch.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("485")]
+        [global::System.Configuration.DefaultSettingValueAttribute("737")]
         public int Splitter_Distance {
             get {
                 return ((int)(this["Splitter_Distance"]));

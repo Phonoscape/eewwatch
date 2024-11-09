@@ -154,54 +154,7 @@ namespace eewwatch
             vvSpeaker = EEWWatch.Properties.Settings.Default.Speaker;
             vvTalkSpeed = EEWWatch.Properties.Settings.Default.TalkSpeed;
 
-            Voicevox.Voicevox vv = new Voicevox.Voicevox();
-            vv.Init(vvSpeaker, vvTalkSpeed);
-            var list = vv.ListSpeaker();
-
-            if (vvSpeaker == null || vvSpeaker.Length == 0)
-            {
-                vvSpeaker = "ずんだもん_ノーマル";
-            }
-
-            voiceListToolStripMenuItem.DropDownItems.Clear();
-            foreach (var item in list)
-            {
-                var name = item.Key;
-                var style = name.Split('_');
-
-                ToolStripMenuItem toolStripMenuItem = null;
-                foreach (ToolStripMenuItem ddItem in voiceListToolStripMenuItem.DropDownItems)
-                {
-                    if (ddItem.Text == style[0])
-                    {
-                        toolStripMenuItem = ddItem;
-                        break;
-                    }
-                }
-
-                ToolStripMenuItem subItem = null;
-                if (toolStripMenuItem != null)
-                {
-                    subItem = (ToolStripMenuItem)toolStripMenuItem.DropDownItems.Add(style[1]);
-                    subItem.Click += Dditem_Click;
-                    subItem.Tag = name;
-                }
-                else
-                {
-                    var dditem = voiceListToolStripMenuItem.DropDownItems;
-                    var newItem = (ToolStripMenuItem)dditem.Add(style[0]);
-                    subItem = (ToolStripMenuItem)newItem.DropDownItems.Add(style[1]);
-                    subItem.Click += Dditem_Click;
-                    subItem.Tag = name;
-                }
-
-                if (name == vvSpeaker)
-                {
-                    ((ToolStripMenuItem)subItem.OwnerItem).Checked = true;
-                    subItem.Checked = true;
-                }
-            }
-
+            MakeVoiceList();
             SetTalkSpeedMenu(vvTalkSpeed);
 
             talktype = EEWWatch.Properties.Settings.Default.Talk;
@@ -899,6 +852,67 @@ namespace eewwatch
             var filename = logPath + sel.SubItems[0].Text + ".txt";
 
             System.Diagnostics.Process.Start(filename);
+        }
+
+        private void eewwatchmain_Activated(object sender, EventArgs e)
+        {
+            MakeVoiceList();
+        }
+
+        private void MakeVoiceList()
+        {
+            Voicevox.Voicevox vv = new Voicevox.Voicevox();
+            vv.Init(vvSpeaker, vvTalkSpeed);
+            var list = vv.ListSpeaker();
+
+            if (vvSpeaker == null || vvSpeaker.Length == 0)
+            {
+                vvSpeaker = "ずんだもん_ノーマル";
+            }
+
+            voiceListToolStripMenuItem.DropDownItems.Clear();
+            foreach (var item in list)
+            {
+                var name = item.Key;
+                var style = name.Split('_');
+
+                ToolStripMenuItem toolStripMenuItem = null;
+                foreach (ToolStripMenuItem ddItem in voiceListToolStripMenuItem.DropDownItems)
+                {
+                    if (ddItem.Text == style[0])
+                    {
+                        toolStripMenuItem = ddItem;
+                        break;
+                    }
+                }
+
+                ToolStripMenuItem subItem = null;
+                if (toolStripMenuItem != null)
+                {
+                    subItem = (ToolStripMenuItem)toolStripMenuItem.DropDownItems.Add(style[1]);
+                    subItem.Click += Dditem_Click;
+                    subItem.Tag = name;
+                }
+                else
+                {
+                    var dditem = voiceListToolStripMenuItem.DropDownItems;
+                    var newItem = (ToolStripMenuItem)dditem.Add(style[0]);
+                    subItem = (ToolStripMenuItem)newItem.DropDownItems.Add(style[1]);
+                    subItem.Click += Dditem_Click;
+                    subItem.Tag = name;
+                }
+
+                if (name == vvSpeaker)
+                {
+                    ((ToolStripMenuItem)subItem.OwnerItem).Checked = true;
+                    subItem.Checked = true;
+                }
+            }
+        }
+
+        private void voiceVoxToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            MakeVoiceList();
         }
     }
 }
