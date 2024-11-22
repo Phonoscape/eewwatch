@@ -196,8 +196,8 @@ namespace eewwatch
         private void SetTalkMenu(int talktype)
         {
             speechSynthesizerToolStripMenuItem.Checked = false;
-            voiceListToolStripMenuItem.Checked = false;
             bouyomichanToolStripMenuItem.Checked = false;
+            voiceVoxToolStripMenuItem.Checked = false;
 
             switch (talktype)
             {
@@ -809,6 +809,9 @@ namespace eewwatch
 
             SetTalkSpeedMenu(vvTalkSpeed);
 
+            talktype = 2;
+            SetTalkMenu(talktype);
+
             Voicevox.Voicevox vv = new Voicevox.Voicevox();
             vv.Init(vvSpeaker, vvTalkSpeed);
             vv.Talk(demoMsg);
@@ -838,6 +841,9 @@ namespace eewwatch
             owner.Checked = true;
 
             vvSpeaker = (string)item.Tag;
+
+            talktype = 2;
+            SetTalkMenu(talktype);
 
             Voicevox.Voicevox vv = new Voicevox.Voicevox();
             vv.Init(vvSpeaker, vvTalkSpeed);
