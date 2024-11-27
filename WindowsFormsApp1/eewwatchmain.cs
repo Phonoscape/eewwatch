@@ -925,7 +925,7 @@ namespace eewwatch
             }
         }
 
-        private void voiceVoxToolStripMenuItem_Click_1(object sender, EventArgs e)
+        private void voiceListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MakeVoiceList();
         }
