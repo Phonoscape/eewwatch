@@ -9,9 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Voicevox
+namespace VoiceBase
 {
-    internal class Voicevox : VoiceBase.VoiceBase
+    internal class VoiceBase
     {
         private readonly Dictionary<string, string> gobiList = new Dictionary<string, string>()
         {
@@ -40,7 +40,7 @@ namespace Voicevox
 
         protected bool isReady { get; set; } = false;
 
-        public Voicevox()
+        public VoiceBase()
         {
             web = new HttpClient();
             web.Timeout = TimeSpan.FromSeconds(5);

@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AivisSpeech.cs" />
     <Compile Include="bouyomi.cs" />
     <Compile Include="eew.cs" />
     <Compile Include="eewwatchmain.cs">
@@ -81,6 +82,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VoiceBase.cs" />
     <Compile Include="Voicevox.cs" />
     <EmbeddedResource Include="eewwatchmain.resx">
       <DependentUpon>eewwatchmain.cs</DependentUpon>

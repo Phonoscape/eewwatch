@@ -65,6 +65,13 @@ namespace eewwatch
 
         SpeechSynthesizer sss = null;
 
+        private const int SSS_SpeechSynthesizer = 0;
+        private const int SSS_Bouyomichan = 1;
+        private const int SSS_VoiceVox = 2;
+
+        private const int SSS_Speed_Fast = 0;
+        private const int SSS_Speed_Slow = 1;
+
         static int WM_KEYDOWN = 0x0100;
         static int WM_KEYUP = 0x0101;
         static int WM_SYSKEYDOWN = 0x0104;
@@ -87,7 +94,7 @@ namespace eewwatch
         static int INTERVAL_ACTIVE = 1000;      // ms
         static int INTERVAL_CHANGE_RECMODE = 5; // min
 
-        private int talktype = 1;
+        private int talktype = SSS_Bouyomichan;
 
         private int tvtest_Rec = 1;
         private int tvtest_recend = 1;
@@ -201,14 +208,14 @@ namespace eewwatch
 
             switch (talktype)
             {
-                case 1:
+                case SSS_Bouyomichan:
                     bouyomichanToolStripMenuItem.Checked = true;
                     break;
-                case 2:
+                case SSS_VoiceVox:
                     voiceVoxToolStripMenuItem.Checked = true;
                     break;
                 default:
-                case 0:
+                case SSS_SpeechSynthesizer:
                     speechSynthesizerToolStripMenuItem.Checked = true;
                     break;
             }
@@ -548,7 +555,7 @@ namespace eewwatch
 
             switch(talktype)
             {
-                case 0:
+                case SSS_SpeechSynthesizer:
                     sss = new SpeechSynthesizer();
 
                     sss.SelectVoiceByHints(VoiceGender.Female);
@@ -556,7 +563,8 @@ namespace eewwatch
 
                     sss.SpeakAsync(text);
                     break;
-                case 1:
+
+                case SSS_Bouyomichan:
                     foreach (System.Diagnostics.Process p in System.Diagnostics.Process.GetProcesses())
                     {
                         Console.WriteLine(p.ProcessName);
@@ -571,7 +579,8 @@ namespace eewwatch
                     Bouyomi.Bouyomi bouyomi = new Bouyomi.Bouyomi();
                     bouyomi.Talk(text);
                     break;
-                case 2:
+
+                case SSS_VoiceVox:
                     Voicevox.Voicevox vv = new Voicevox.Voicevox();
                     vv.Init(vvSpeaker, vvTalkSpeed);
                     //vv.SelectPreset(vvTalkSpeed);
@@ -765,19 +774,19 @@ namespace eewwatch
 
         private void speechSynthesizerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            talktype = 0;
+            talktype = SSS_SpeechSynthesizer;
             SetTalkMenu(talktype);
         }
 
         private void bouyomichanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            talktype = 1;
+            talktype = SSS_Bouyomichan;
             SetTalkMenu(talktype);
         }
 
         private void voicevoxToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            talktype = 2;
+            talktype = SSS_VoiceVox;
             SetTalkMenu(talktype);
         }
 
@@ -800,16 +809,16 @@ namespace eewwatch
         {
             if (sender == FastToolStripMenuItem)
             {
-                vvTalkSpeed = 0;
+                vvTalkSpeed = SSS_Speed_Fast;
             }
             else
             {
-                vvTalkSpeed = 1;
+                vvTalkSpeed = SSS_Speed_Slow;
             }
 
             SetTalkSpeedMenu(vvTalkSpeed);
 
-            talktype = 2;
+            talktype = SSS_VoiceVox;
             SetTalkMenu(talktype);
 
             Voicevox.Voicevox vv = new Voicevox.Voicevox();
@@ -819,8 +828,8 @@ namespace eewwatch
 
         private void SetTalkSpeedMenu(int vvTalkSpeed)
         {
-            FastToolStripMenuItem.Checked = vvTalkSpeed == 0;
-            SlowToolStripMenuItem.Checked = vvTalkSpeed == 1;
+            FastToolStripMenuItem.Checked = vvTalkSpeed == SSS_Speed_Fast;
+            SlowToolStripMenuItem.Checked = vvTalkSpeed == SSS_Speed_Slow;
         }
 
         private void Dditem_Click(object sender, EventArgs e)
@@ -842,7 +851,7 @@ namespace eewwatch
 
             vvSpeaker = (string)item.Tag;
 
-            talktype = 2;
+            talktype = SSS_VoiceVox;
             SetTalkMenu(talktype);
 
             Voicevox.Voicevox vv = new Voicevox.Voicevox();
