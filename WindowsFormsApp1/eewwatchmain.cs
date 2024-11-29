@@ -33,21 +33,25 @@ namespace eewwatch
         int warn;
         int interval;
 
-        string Message;
-        string Report_time;
-        string Region_name;
-        string Longitude;
-        string Depth;
-        string Latitude;
-        string Magunitude;
-        string Calcintensity;
-        int Report_num;
-        string Report_id;
-        string Report_id_old = "";
-        bool Is_cancel;
-        bool Is_final;
-        bool Is_training;
-        string Alertflg;
+        public class EewValue
+        {
+            public string Message { get; set; }
+            public string Report_time { get; set; }
+            public string Region_name { get; set; }
+            public string Longitude { get; set; }
+            public string Depth { get; set; }
+            public string Latitude { get; set; }
+            public string Magunitude { get; set; }
+            public string Calcintensity { get; set; }
+            public int Report_num { get; set; }
+            public string Report_id { get; set; }
+            public bool Is_cancel { get; set; }
+            public bool Is_final { get; set; }
+            public bool Is_training { get; set; }
+            public string Alertflg { get; set; }
+        }
+
+        EewValue newValue, oldValue;
 
         double maxCalcintensity;
 
@@ -173,6 +177,9 @@ namespace eewwatch
             outputPath = Application.StartupPath;
             logPath = outputPath + "\\log\\";
 
+            newValue = new EewValue();
+            oldValue = new EewValue();
+
             //            if (sss != null)
             //            {
             //                sss.SpeakAsyncCancelAll();
@@ -270,16 +277,16 @@ namespace eewwatch
                 textBox1.Clear();
                 textBox1.Text = res;
 
-                if (Report_id != "")
+                if (newValue.Report_id != "")
                 {
                     CheckSpeak();
                     AddList();
-                    Report_id_old = Report_id;
+                    oldValue = newValue;
                 }
-                else if (Report_id_old != "")
+                else if (oldValue.Report_id != "")
                 {
                     talk("緊急地震速報の通知が終了しました");
-                    Report_id_old = "";
+                    oldValue.Report_id = "";
                 }
 
                 statusStrip1.Items[1].Text = warn > 0 ? "入電中" : "待機中";
@@ -301,12 +308,12 @@ namespace eewwatch
             }
             catch (HttpRequestException e)
             {
-                Message = "データがありません";
+                newValue.Message = "データがありません";
                 msg = "";
             }
             catch
             {
-                Message = "データがありません";
+                newValue.Message = "データがありません";
                 msg = "";
             }
             return msg;
@@ -322,27 +329,27 @@ namespace eewwatch
                 return;
             }
 
-            Message = eew.Result.Message;
-            Report_time = eew.Report_time;
-            Region_name = eew.Region_name;
-            Longitude = eew.Longitude;
-            Depth = eew.Depth;
-            Latitude = eew.Latitude;
-            Magunitude = eew.Magunitude;
-            Calcintensity = eew.Calcintensity;
-            Report_num = eew.Report_num == "" ? 0 : int.Parse(eew.Report_num);
-            Report_id = eew.Report_id;
-            Is_cancel = eew.Is_cancel == "" ? false : bool.Parse(eew.Is_cancel);
-            Is_final = eew.Is_final == "" ? false : bool.Parse(eew.Is_final);
-            Alertflg = eew.Alertflg;
-            Is_training = eew.Is_training == "" ? false : bool.Parse(eew.Is_training);
+            newValue.Message = eew.Result.Message;
+            newValue.Report_time = eew.Report_time;
+            newValue.Region_name = eew.Region_name;
+            newValue.Longitude = eew.Longitude;
+            newValue.Depth = eew.Depth;
+            newValue.Latitude = eew.Latitude;
+            newValue.Magunitude = eew.Magunitude;
+            newValue.Calcintensity = eew.Calcintensity;
+            newValue.Report_num = eew.Report_num == "" ? 0 : int.Parse(eew.Report_num);
+            newValue.Report_id = eew.Report_id;
+            newValue.Is_cancel = eew.Is_cancel == "" ? false : bool.Parse(eew.Is_cancel);
+            newValue.Is_final = eew.Is_final == "" ? false : bool.Parse(eew.Is_final);
+            newValue.Alertflg = eew.Alertflg;
+            newValue.Is_training = eew.Is_training == "" ? false : bool.Parse(eew.Is_training);
 
-            if (Calcintensity != "")
+            if (newValue.Calcintensity != "")
             {
-                maxCalcintensity = int.Parse(Calcintensity.Substring(0, 1));
+                maxCalcintensity = int.Parse(newValue.Calcintensity.Substring(0, 1));
                 if (maxCalcintensity >= 5)
                 {
-                    if (Calcintensity.Substring(1, 1) == "強")
+                    if (newValue.Calcintensity.Substring(1, 1) == "強")
                     {
                         maxCalcintensity += 0.5;
                     }
@@ -362,24 +369,26 @@ namespace eewwatch
 
             for (int i = 0; i < listView1.Items.Count; i++)
             {
-                if (listView1.Items[i].Text == Report_id)
+                if (listView1.Items[i].Text == newValue.Report_id)
                 {
-                    if (listView1.Items[i].SubItems[3].Text != Alertflg)
+                    if (listView1.Items[i].SubItems[3].Text != newValue.Alertflg)
                     {
-                        if (Alertflg == "警報")
+                        if (newValue.Alertflg == "警報")
                         {
                             recTv();
                         }
 
-                        talk("緊急地震速報が" + Alertflg + "、になりました");
+                        talk("緊急地震速報が" + newValue.Alertflg + "、になりました");
                     }
 
-                    if (listView1.Items[i].SubItems[6].Text != Magunitude && Convert.ToDouble(listView1.Items[i].SubItems[6].Text) < 5.0 && Convert.ToDouble(Magunitude) >= 5.0)
+                    if (listView1.Items[i].SubItems[6].Text != newValue.Magunitude && 
+                        Convert.ToDouble(listView1.Items[i].SubItems[6].Text) < 5.0 && 
+                        Convert.ToDouble(newValue.Magunitude) >= 5.0)
                     {
                         talk("マグニチュードが、5.0、を超えました");
                     }
 
-                    if (listView1.Items[i].SubItems[4].Text == "継続" && Is_final)
+                    if (listView1.Items[i].SubItems[4].Text == "継続" && newValue.Is_final)
                     {
                         warn--;
                         if ( warn <= 0 )
@@ -391,7 +400,7 @@ namespace eewwatch
                         talk("最終報が通知されました");
                     }
 
-                    if (listView1.Items[i].SubItems[2].Text != Report_num.ToString())
+                    if (listView1.Items[i].SubItems[2].Text != newValue.Report_num.ToString())
                     {
                         //                       if ( !Directory.Exists(outputPath+"\\log"))
                         //                       {
@@ -399,13 +408,13 @@ namespace eewwatch
                         //                       }
 
                         Encoding enc2 = Encoding.UTF8;
-                        StreamWriter writer2 = new StreamWriter(logPath + Report_id.ToString() + ".txt", true, enc2);
+                        StreamWriter writer2 = new StreamWriter(logPath + newValue.Report_id.ToString() + ".txt", true, enc2);
                         //                        writer2.WriteLine(msg.Result.ToString() + Environment.NewLine);
                         writer2.WriteLine(msg);
                         writer2.Close();
                     }
 
-                    if (Is_cancel)
+                    if (newValue.Is_cancel)
                     {
                         if (listView1.Items[i].SubItems[4].Text != "キャンセル")
                         {
@@ -413,18 +422,18 @@ namespace eewwatch
                         }
                     }
 
-                    if (Calcintensity != "")
+                    if (newValue.Calcintensity != "")
                     {
-                        calc = int.Parse(Calcintensity.Substring(0, 1));
+                        calc = int.Parse(newValue.Calcintensity.Substring(0, 1));
                         if (maxCalcintensity >= 5)
                         {
-                            if (Calcintensity.Substring(1, 1) == "強") calc += 0.5;
+                            if (newValue.Calcintensity.Substring(1, 1) == "強") calc += 0.5;
                         }
                     }
 
                     if (calc > maxCalcintensity)
                     {
-                        talk("予想最大震度" + Calcintensity);
+                        talk("予想最大震度" + newValue.Calcintensity);
                         maxCalcintensity = calc;
                     }
 
@@ -439,14 +448,14 @@ namespace eewwatch
             }
 
             Encoding enc = Encoding.UTF8;
-            StreamWriter writer = new StreamWriter(logPath + Report_id.ToString() + ".txt", true, enc);
+            StreamWriter writer = new StreamWriter(logPath + newValue.Report_id.ToString() + ".txt", true, enc);
             //            writer.WriteLine(msg.Result.ToString() + Environment.NewLine);
             writer.WriteLine(msg);
             writer.Close();
 
-            if (Is_training)
+            if (newValue.Is_training)
             {
-                talkmsg = Region_name + "訓練の緊急地震速報、" + Alertflg + "、が発表されました";
+                talkmsg = newValue.Region_name + "訓練の緊急地震速報、" + newValue.Alertflg + "、が発表されました";
             }
             else
             {
@@ -454,15 +463,15 @@ namespace eewwatch
 
                     foreach (var reg in kinken)
                     {
-                        if (Region_name.Contains(reg))
+                        if (newValue.Region_name.Contains(reg))
                         {
                             msg = "揺れ注意。";
                         }
                     }
 
-                talkmsg = msg + Region_name + "でマグニチュード" + Magunitude + "、予想最大震度" + Calcintensity + "の" + Alertflg + "が発表されました";
+                talkmsg = msg + newValue.Region_name + "でマグニチュード" + newValue.Magunitude + "、予想最大震度" + newValue.Calcintensity + "の" + newValue.Alertflg + "が発表されました";
 
-                if (Alertflg == "警報")
+                if (newValue.Alertflg == "警報")
                 {
                     recTv();
                 }
@@ -479,45 +488,45 @@ namespace eewwatch
 
             for (int i=0;i<listView1.Items.Count;i++)
             {
-                if ( listView1.Items[i].Text == Report_id)
+                if ( listView1.Items[i].Text == newValue.Report_id)
                 {
-                    listView1.Items[i].SubItems[0].Text = Report_id;
-                    listView1.Items[i].SubItems[1].Text = Report_time;
-                    listView1.Items[i].SubItems[2].Text = Report_num.ToString();
+                    listView1.Items[i].SubItems[0].Text = newValue.Report_id;
+                    listView1.Items[i].SubItems[1].Text = newValue.Report_time;
+                    listView1.Items[i].SubItems[2].Text = newValue.Report_num.ToString();
 
-                    if (Is_training)
+                    if (newValue.Is_training)
                     {
                         listView1.Items[i].SubItems[3].Text = "訓練";
                     }
                     else
                     {
-                        listView1.Items[i].SubItems[3].Text = Alertflg;
+                        listView1.Items[i].SubItems[3].Text = newValue.Alertflg;
                     }
 
-                    if (Is_cancel)
+                    if (newValue.Is_cancel)
                     {
                         listView1.Items[i].SubItems[4].Text = "キャンセル";
                     }
                     else
                     {
-                        listView1.Items[i].SubItems[4].Text = Is_final == true ? "最終" : "継続";
+                        listView1.Items[i].SubItems[4].Text = newValue.Is_final == true ? "最終" : "継続";
                     }
 
-                    if (Calcintensity != "")
+                    if (newValue.Calcintensity != "")
                     {
-                        calc = int.Parse(Calcintensity.Substring(0, 1));
+                        calc = int.Parse(newValue.Calcintensity.Substring(0, 1));
                         if (maxCalcintensity >= 5)
                         {
-                            if (Calcintensity.Substring(1, 1) == "強") calc += 0.5;
+                            if (newValue.Calcintensity.Substring(1, 1) == "強") calc += 0.5;
                         }
                     }
 
-                    listView1.Items[i].SubItems[5].Text = Region_name;
-                    listView1.Items[i].SubItems[6].Text = Magunitude;
-                    listView1.Items[i].SubItems[7].Text = Depth;
-                    listView1.Items[i].SubItems[8].Text = Calcintensity;
-                    listView1.Items[i].SubItems[9].Text = Longitude;
-                    listView1.Items[i].SubItems[10].Text = Latitude;
+                    listView1.Items[i].SubItems[5].Text = newValue.Region_name;
+                    listView1.Items[i].SubItems[6].Text = newValue.Magunitude;
+                    listView1.Items[i].SubItems[7].Text = newValue.Depth;
+                    listView1.Items[i].SubItems[8].Text = newValue.Calcintensity;
+                    listView1.Items[i].SubItems[9].Text = newValue.Longitude;
+                    listView1.Items[i].SubItems[10].Text = newValue.Latitude;
 
                     return;
                 }
@@ -529,17 +538,17 @@ namespace eewwatch
                 Directory.CreateDirectory(logPath);
             }
 
-            val[0] = Report_id;
-            val[1] = Report_time;
-            val[2] = Report_num.ToString();
-            val[3] = Alertflg;
-            val[4] = Is_final == true ? "最終" : "継続";
-            val[5] = Region_name;
-            val[6] = Magunitude;
-            val[7] = Depth;
-            val[8] = Calcintensity;
-            val[9] = Longitude;
-            val[10] = Latitude;
+            val[0] = newValue.Report_id;
+            val[1] = newValue.Report_time;
+            val[2] = newValue.Report_num.ToString();
+            val[3] = newValue.Alertflg;
+            val[4] = newValue.Is_final == true ? "最終" : "継続";
+            val[5] = newValue.Region_name;
+            val[6] = newValue.Magunitude;
+            val[7] = newValue.Depth;
+            val[8] = newValue.Calcintensity;
+            val[9] = newValue.Longitude;
+            val[10] = newValue.Latitude;
 
             // listView1.Items.Add(new ListViewItem(val));
             ListViewItem item = listView1.Items.Insert(0, new ListViewItem(val));
@@ -790,17 +799,17 @@ namespace eewwatch
             SetTalkMenu(talktype);
         }
 
-        private void tvTestToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TvTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tvTestToolStripMenuItem.Checked = tvTestToolStripMenuItem.Checked ? false : true;
+            tvTestToolStripMenuItem.Checked = !tvTestToolStripMenuItem.Checked;
         }
 
-        private void contEndToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ContEndToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            contEndToolStripMenuItem.Checked = contEndToolStripMenuItem.Checked ? false : true;
+            contEndToolStripMenuItem.Checked = !contEndToolStripMenuItem.Checked;
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
@@ -925,7 +934,7 @@ namespace eewwatch
             }
         }
 
-        private void voiceListToolStripMenuItem_Click(object sender, EventArgs e)
+        private void VoiceListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MakeVoiceList();
         }

@@ -11,9 +11,9 @@ using System.Web;
 
 namespace AivisSpeech
 {
-    internal class AivisSpeech : VoiceBase.VoiceBase
+    class AivisSpeech
     {
-        private readonly Dictionary<string, string> gobiList = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> gobiList = new Dictionary<string, string>
         {
             {"ずんだもん", "なのだ"}
         };
@@ -33,12 +33,12 @@ namespace AivisSpeech
         private int presetID = 0;
         private double intonation = 1.0;
 
-        private string URL = "http://127.0.0.1:50021/";
+        private string URL = "http://127.0.0.1:10101/";
         //private string URL = "http://127.0.0.1:50020/";
         private HttpClient web;
         private Dictionary<string, int> speakerList;
 
-        protected bool isReady { get; set; } = false;
+        protected bool IsReady { get; set; } = false;
 
         public AivisSpeech()
         {
@@ -51,8 +51,8 @@ namespace AivisSpeech
 
         public void Init(string sp,int vvTalkSpeed)
         {
-            isReady = ServiceCheckAsync();
-            if (isReady)
+            IsReady = ServiceCheckAsync();
+            if (IsReady)
             {
                 speakerList = ListSpeaker();
 
@@ -64,7 +64,7 @@ namespace AivisSpeech
                     }
                     else
                     {
-                        speaker = "ずんだもん_ノーマル";
+                        speaker = "Anneli_ノーマル";
                         //isReady = SelectSpeakerAsync("ずんだもん", "ノーマル", speaker);
                     }
 
@@ -96,7 +96,7 @@ namespace AivisSpeech
                 }
                 else
                 {
-                    isReady = false;
+                    IsReady = false;
                 }
             }
         }
@@ -131,7 +131,7 @@ namespace AivisSpeech
 
         public void Talk(string message)
         {
-            if (isReady)
+            if (IsReady)
             {
                 //var query = QueryAsync(message);
 
@@ -241,7 +241,7 @@ namespace AivisSpeech
         {
             Dictionary<string, int> result = new Dictionary<string, int>();
 
-            if (isReady)
+            if (IsReady)
             {
                 string opt = "speakers";
 
@@ -281,7 +281,7 @@ namespace AivisSpeech
         {
             bool fCheck = false;
 
-            if (isReady)
+            if (IsReady)
             {
                 string opt = "speakers";
 
@@ -353,7 +353,7 @@ namespace AivisSpeech
 
         private bool AccessPreset(Preset preset,int id)
         {
-            if (isReady)
+            if (IsReady)
             {
                 string opt = string.Empty;
 
@@ -400,7 +400,7 @@ namespace AivisSpeech
         {
             id = 0;
 
-            if (isReady)
+            if (IsReady)
             {
                 string opt = "presets";
 

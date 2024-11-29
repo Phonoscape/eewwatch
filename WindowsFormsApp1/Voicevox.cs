@@ -11,7 +11,7 @@ using System.Web;
 
 namespace Voicevox
 {
-    internal class Voicevox : VoiceBase.VoiceBase
+    internal class Voicevox
     {
         private readonly Dictionary<string, string> gobiList = new Dictionary<string, string>()
         {
@@ -38,7 +38,7 @@ namespace Voicevox
         private HttpClient web;
         private Dictionary<string, int> speakerList;
 
-        protected bool isReady { get; set; } = false;
+        protected bool IsReady { get; set; } = false;
 
         public Voicevox()
         {
@@ -51,8 +51,8 @@ namespace Voicevox
 
         public void Init(string sp,int vvTalkSpeed)
         {
-            isReady = ServiceCheckAsync();
-            if (isReady)
+            IsReady = ServiceCheckAsync();
+            if (IsReady)
             {
                 speakerList = ListSpeaker();
 
@@ -96,7 +96,7 @@ namespace Voicevox
                 }
                 else
                 {
-                    isReady = false;
+                    IsReady = false;
                 }
             }
         }
@@ -131,7 +131,7 @@ namespace Voicevox
 
         public void Talk(string message)
         {
-            if (isReady)
+            if (IsReady)
             {
                 //var query = QueryAsync(message);
 
@@ -241,7 +241,7 @@ namespace Voicevox
         {
             Dictionary<string, int> result = new Dictionary<string, int>();
 
-            if (isReady)
+            if (IsReady)
             {
                 string opt = "speakers";
 
@@ -281,7 +281,7 @@ namespace Voicevox
         {
             bool fCheck = false;
 
-            if (isReady)
+            if (IsReady)
             {
                 string opt = "speakers";
 
@@ -353,7 +353,7 @@ namespace Voicevox
 
         private bool AccessPreset(Preset preset,int id)
         {
-            if (isReady)
+            if (IsReady)
             {
                 string opt = string.Empty;
 
@@ -400,7 +400,7 @@ namespace Voicevox
         {
             id = 0;
 
-            if (isReady)
+            if (IsReady)
             {
                 string opt = "presets";
 

@@ -154,7 +154,7 @@
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.exitToolStripMenuItem.Text = "終了(&X)";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // talkToolStripMenuItem
             // 
@@ -216,7 +216,7 @@
             this.voiceListToolStripMenuItem.Name = "voiceListToolStripMenuItem";
             this.voiceListToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.voiceListToolStripMenuItem.Text = "VoiceList";
-            this.voiceListToolStripMenuItem.Click += new System.EventHandler(this.voiceListToolStripMenuItem_Click);
+            this.voiceListToolStripMenuItem.Click += new System.EventHandler(this.VoiceListToolStripMenuItem_Click);
             // 
             // recToolStripMenuItem
             // 
@@ -232,14 +232,14 @@
             this.tvTestToolStripMenuItem.Name = "tvTestToolStripMenuItem";
             this.tvTestToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
             this.tvTestToolStripMenuItem.Text = "TvTest";
-            this.tvTestToolStripMenuItem.Click += new System.EventHandler(this.tvTestToolStripMenuItem_Click);
+            this.tvTestToolStripMenuItem.Click += new System.EventHandler(this.TvTestToolStripMenuItem_Click);
             // 
             // contEndToolStripMenuItem
             // 
             this.contEndToolStripMenuItem.Name = "contEndToolStripMenuItem";
             this.contEndToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
             this.contEndToolStripMenuItem.Text = "番組の終了まで録画を有効にする";
-            this.contEndToolStripMenuItem.Click += new System.EventHandler(this.contEndToolStripMenuItem_Click);
+            this.contEndToolStripMenuItem.Click += new System.EventHandler(this.ContEndToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
