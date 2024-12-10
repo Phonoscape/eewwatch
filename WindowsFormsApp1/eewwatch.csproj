@@ -82,6 +82,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VoiceBase.cs" />
     <Compile Include="Voicevox.cs" />
     <EmbeddedResource Include="eewwatchmain.resx">
       <DependentUpon>eewwatchmain.cs</DependentUpon>

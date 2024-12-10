@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windows.UI.Notifications;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace eewwatch
 {
@@ -64,6 +63,9 @@ namespace eewwatch
         private string vvSpeaker;
         private int vvTalkSpeed;
 
+        private string asSpeaker;
+        private int asTalkSpeed;
+
         List<System.Diagnostics.Process> TvtestProcess;
         System.Diagnostics.Process BouyomiProcess;
 
@@ -72,9 +74,13 @@ namespace eewwatch
         private const int SSS_SpeechSynthesizer = 0;
         private const int SSS_Bouyomichan = 1;
         private const int SSS_VoiceVox = 2;
+        private const int SSS_AivisSpeech = 3;
 
-        private const int SSS_Speed_Fast = 0;
-        private const int SSS_Speed_Slow = 1;
+        private const int SSS_VV_Speed_Fast = 0;
+        private const int SSS_VV_Speed_Slow = 1;
+
+        private const int SSS_AS_Speed_Fast = 0;
+        private const int SSS_AS_Speed_Slow = 1;
 
         static int WM_KEYDOWN = 0x0100;
         static int WM_KEYUP = 0x0101;
@@ -162,11 +168,15 @@ namespace eewwatch
 
             listView1.FullRowSelect = true;
 
-            vvSpeaker = EEWWatch.Properties.Settings.Default.Speaker;
-            vvTalkSpeed = EEWWatch.Properties.Settings.Default.TalkSpeed;
+            vvSpeaker = EEWWatch.Properties.Settings.Default.VvSpeaker;
+            vvTalkSpeed = EEWWatch.Properties.Settings.Default.VvTalkSpeed;
+            asSpeaker = EEWWatch.Properties.Settings.Default.AsSpeaker;
+            asTalkSpeed = EEWWatch.Properties.Settings.Default.AsTalkSpeed;
 
-            MakeVoiceList();
-            SetTalkSpeedMenu(vvTalkSpeed);
+            VvMakeVoiceList();
+            SetVvTalkSpeedMenu(vvTalkSpeed);
+            AsMakeVoiceList();
+            SetAsTalkSpeedMenu(asTalkSpeed);
 
             talktype = EEWWatch.Properties.Settings.Default.Talk;
             SetTalkMenu(talktype);
@@ -209,21 +219,27 @@ namespace eewwatch
 
         private void SetTalkMenu(int talktype)
         {
-            speechSynthesizerToolStripMenuItem.Checked = false;
-            bouyomichanToolStripMenuItem.Checked = false;
-            voiceVoxToolStripMenuItem.Checked = false;
+            this.talktype = talktype;
+
+            SpeechSynthesizerToolStripMenuItem.Checked = false;
+            BouyomichanToolStripMenuItem.Checked = false;
+            VoiceVoxToolStripMenuItem.Checked = false;
+            AivisSpeechToolStripMenuItem.Checked = false;
 
             switch (talktype)
             {
                 case SSS_Bouyomichan:
-                    bouyomichanToolStripMenuItem.Checked = true;
+                    BouyomichanToolStripMenuItem.Checked = true;
                     break;
                 case SSS_VoiceVox:
-                    voiceVoxToolStripMenuItem.Checked = true;
+                    VoiceVoxToolStripMenuItem.Checked = true;
+                    break;
+                case SSS_AivisSpeech:
+                    AivisSpeechToolStripMenuItem.Checked= true;
                     break;
                 default:
                 case SSS_SpeechSynthesizer:
-                    speechSynthesizerToolStripMenuItem.Checked = true;
+                    SpeechSynthesizerToolStripMenuItem.Checked = true;
                     break;
             }
         }
@@ -592,8 +608,13 @@ namespace eewwatch
                 case SSS_VoiceVox:
                     Voicevox.Voicevox vv = new Voicevox.Voicevox();
                     vv.Init(vvSpeaker, vvTalkSpeed);
-                    //vv.SelectPreset(vvTalkSpeed);
                     vv.Talk(text);
+                    break;
+
+                case SSS_AivisSpeech:
+                    AivisSpeech.AivisSpeech aivisSpeech = new AivisSpeech.AivisSpeech();
+                    aivisSpeech.Init(vvSpeaker, vvTalkSpeed);
+                    aivisSpeech.Talk(Text);
                     break;
             }
         }
@@ -637,6 +658,9 @@ namespace eewwatch
             }
         }
 
+        /*
+         * UI関連 
+         */
         private void recModeTimer_Tick(object sender, EventArgs e)
         {
             recModeTimer.Stop();
@@ -714,6 +738,16 @@ namespace eewwatch
 
         }
 
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            var sels = ((ListView)sender).SelectedItems;
+            var sel = sels[0];
+
+            var filename = logPath + sel.SubItems[0].Text + ".txt";
+
+            System.Diagnostics.Process.Start(filename);
+        }
+
         private void eewwatchmain_FormClosing(object sender, FormClosingEventArgs e)
         {
             web.Dispose();
@@ -744,8 +778,10 @@ namespace eewwatch
             EEWWatch.Properties.Settings.Default.Column11 = listView1.Columns[10].Width;
 
             EEWWatch.Properties.Settings.Default.Talk = talktype;
-            EEWWatch.Properties.Settings.Default.Speaker = vvSpeaker;
-            EEWWatch.Properties.Settings.Default.TalkSpeed = vvTalkSpeed;
+            EEWWatch.Properties.Settings.Default.VvSpeaker = vvSpeaker;
+            EEWWatch.Properties.Settings.Default.VvTalkSpeed = vvTalkSpeed;
+            EEWWatch.Properties.Settings.Default.AsSpeaker = asSpeaker;
+            EEWWatch.Properties.Settings.Default.AsTalkSpeed = asTalkSpeed;
 
             EEWWatch.Properties.Settings.Default.Save();
         }
@@ -781,22 +817,30 @@ namespace eewwatch
 
         }
 
+        private void eewwatchmain_Activated(object sender, EventArgs e)
+        {
+            VvMakeVoiceList();
+            AsMakeVoiceList();
+        }
+
         private void speechSynthesizerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            talktype = SSS_SpeechSynthesizer;
-            SetTalkMenu(talktype);
+            SetTalkMenu(SSS_SpeechSynthesizer);
         }
 
         private void bouyomichanToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            talktype = SSS_Bouyomichan;
-            SetTalkMenu(talktype);
+            SetTalkMenu(SSS_Bouyomichan);
         }
 
         private void voicevoxToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            talktype = SSS_VoiceVox;
-            SetTalkMenu(talktype);
+            SetTalkMenu(SSS_VoiceVox);
+        }
+
+        private void AivisSpeechToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetTalkMenu(SSS_AivisSpeech);
         }
 
         private void TvTestToolStripMenuItem_Click(object sender, EventArgs e)
@@ -814,18 +858,18 @@ namespace eewwatch
             this.Close();
         }
 
-        private void SpeedToolStripMenuItem_Click(object sender, EventArgs e)
+        private void VvSpeedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (sender == FastToolStripMenuItem)
+            if (sender == VvFastToolStripMenuItem)
             {
-                vvTalkSpeed = SSS_Speed_Fast;
+                vvTalkSpeed = SSS_VV_Speed_Fast;
             }
             else
             {
-                vvTalkSpeed = SSS_Speed_Slow;
+                vvTalkSpeed = SSS_VV_Speed_Slow;
             }
 
-            SetTalkSpeedMenu(vvTalkSpeed);
+            SetVvTalkSpeedMenu(vvTalkSpeed);
 
             talktype = SSS_VoiceVox;
             SetTalkMenu(talktype);
@@ -835,18 +879,45 @@ namespace eewwatch
             vv.Talk(demoMsg);
         }
 
-        private void SetTalkSpeedMenu(int vvTalkSpeed)
+        private void AsSpeedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FastToolStripMenuItem.Checked = vvTalkSpeed == SSS_Speed_Fast;
-            SlowToolStripMenuItem.Checked = vvTalkSpeed == SSS_Speed_Slow;
+            if (sender == AsFastToolStripMenuItem)
+            {
+                asTalkSpeed = SSS_AS_Speed_Fast;
+            }
+            else
+            {
+                asTalkSpeed = SSS_AS_Speed_Slow;
+            }
+
+            SetAsTalkSpeedMenu(asTalkSpeed);
+
+            talktype = SSS_AivisSpeech;
+            SetTalkMenu(talktype);
+
+            AivisSpeech.AivisSpeech aivisSpeech = new AivisSpeech.AivisSpeech();
+            aivisSpeech.Init(vvSpeaker, vvTalkSpeed);
+            aivisSpeech.Talk(demoMsg);
         }
 
-        private void Dditem_Click(object sender, EventArgs e)
+        private void SetVvTalkSpeedMenu(int vvTalkSpeed)
+        {
+            VvFastToolStripMenuItem.Checked = vvTalkSpeed == SSS_VV_Speed_Fast;
+            VvSlowToolStripMenuItem.Checked = vvTalkSpeed == SSS_VV_Speed_Slow;
+        }
+
+        private void SetAsTalkSpeedMenu(int asTalkSpeed)
+        {
+            AsFastToolStripMenuItem.Checked = asTalkSpeed == SSS_AS_Speed_Fast;
+            AsSlowToolStripMenuItem.Checked = asTalkSpeed == SSS_AS_Speed_Slow;
+        }
+
+        private void VvDditem_Click(object sender, EventArgs e)
         {
             var item = (ToolStripMenuItem)sender;
             var owner = (ToolStripMenuItem)item.OwnerItem;
 
-            foreach(ToolStripMenuItem itemAll in voiceListToolStripMenuItem.DropDownItems)
+            foreach(ToolStripMenuItem itemAll in VvVoiceListToolStripMenuItem.DropDownItems)
             {
                 itemAll.Checked = false;
                 foreach (ToolStripMenuItem subItemAll in itemAll.DropDownItems)
@@ -860,30 +931,40 @@ namespace eewwatch
 
             vvSpeaker = (string)item.Tag;
 
-            talktype = SSS_VoiceVox;
-            SetTalkMenu(talktype);
+            SetTalkMenu(SSS_VoiceVox);
 
             Voicevox.Voicevox vv = new Voicevox.Voicevox();
             vv.Init(vvSpeaker, vvTalkSpeed);
             vv.Talk(demoMsg);
         }
 
-        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void AsDditem_Click(object sender, EventArgs e)
         {
-            var sels = ((ListView)sender).SelectedItems;
-            var sel = sels[0];
+            var item = (ToolStripMenuItem)sender;
+            var owner = (ToolStripMenuItem)item.OwnerItem;
 
-            var filename = logPath + sel.SubItems[0].Text + ".txt";
+            foreach (ToolStripMenuItem itemAll in VvVoiceListToolStripMenuItem.DropDownItems)
+            {
+                itemAll.Checked = false;
+                foreach (ToolStripMenuItem subItemAll in itemAll.DropDownItems)
+                {
+                    subItemAll.Checked = false;
+                }
+            }
 
-            System.Diagnostics.Process.Start(filename);
+            item.Checked = true;
+            owner.Checked = true;
+
+            vvSpeaker = (string)item.Tag;
+
+            SetTalkMenu(SSS_AivisSpeech);
+
+            AivisSpeech.AivisSpeech aivisSpeech = new AivisSpeech.AivisSpeech();
+            aivisSpeech.Init(vvSpeaker, vvTalkSpeed);
+            aivisSpeech.Talk(demoMsg);
         }
 
-        private void eewwatchmain_Activated(object sender, EventArgs e)
-        {
-            MakeVoiceList();
-        }
-
-        private void MakeVoiceList()
+        private void VvMakeVoiceList()
         {
             Voicevox.Voicevox vv = new Voicevox.Voicevox();
             vv.Init(vvSpeaker, vvTalkSpeed);
@@ -891,17 +972,17 @@ namespace eewwatch
 
             if (vvSpeaker == null || vvSpeaker.Length == 0)
             {
-                vvSpeaker = "ずんだもん_ノーマル";
+                vvSpeaker = vv.defaultVoice;
             }
 
-            voiceListToolStripMenuItem.DropDownItems.Clear();
+            VvVoiceListToolStripMenuItem.DropDownItems.Clear();
             foreach (var item in list)
             {
                 var name = item.Key;
                 var style = name.Split('_');
 
                 ToolStripMenuItem toolStripMenuItem = null;
-                foreach (ToolStripMenuItem ddItem in voiceListToolStripMenuItem.DropDownItems)
+                foreach (ToolStripMenuItem ddItem in VvVoiceListToolStripMenuItem.DropDownItems)
                 {
                     if (ddItem.Text == style[0])
                     {
@@ -914,15 +995,15 @@ namespace eewwatch
                 if (toolStripMenuItem != null)
                 {
                     subItem = (ToolStripMenuItem)toolStripMenuItem.DropDownItems.Add(style[1]);
-                    subItem.Click += Dditem_Click;
+                    subItem.Click += VvDditem_Click;
                     subItem.Tag = name;
                 }
                 else
                 {
-                    var dditem = voiceListToolStripMenuItem.DropDownItems;
+                    var dditem = VvVoiceListToolStripMenuItem.DropDownItems;
                     var newItem = (ToolStripMenuItem)dditem.Add(style[0]);
                     subItem = (ToolStripMenuItem)newItem.DropDownItems.Add(style[1]);
-                    subItem.Click += Dditem_Click;
+                    subItem.Click += VvDditem_Click;
                     subItem.Tag = name;
                 }
 
@@ -934,9 +1015,65 @@ namespace eewwatch
             }
         }
 
-        private void VoiceListToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AsMakeVoiceList()
         {
-            MakeVoiceList();
+            AivisSpeech.AivisSpeech aivisSpeech = new AivisSpeech.AivisSpeech();
+            aivisSpeech.Init(asSpeaker, asTalkSpeed);
+            var list = aivisSpeech.ListSpeaker();
+
+            if (asSpeaker == null || asSpeaker.Length == 0)
+            {
+                asSpeaker = aivisSpeech.defaultVoice;
+            }
+
+            AsVoiceListToolStripMenuItem.DropDownItems.Clear();
+            foreach (var item in list)
+            {
+                var name = item.Key;
+                var style = name.Split('_');
+
+                ToolStripMenuItem toolStripMenuItem = null;
+                foreach (ToolStripMenuItem ddItem in AsVoiceListToolStripMenuItem.DropDownItems)
+                {
+                    if (ddItem.Text == style[0])
+                    {
+                        toolStripMenuItem = ddItem;
+                        break;
+                    }
+                }
+
+                ToolStripMenuItem subItem = null;
+                if (toolStripMenuItem != null)
+                {
+                    subItem = (ToolStripMenuItem)toolStripMenuItem.DropDownItems.Add(style[1]);
+                    subItem.Click += AsDditem_Click;
+                    subItem.Tag = name;
+                }
+                else
+                {
+                    var dditem = AsVoiceListToolStripMenuItem.DropDownItems;
+                    var newItem = (ToolStripMenuItem)dditem.Add(style[0]);
+                    subItem = (ToolStripMenuItem)newItem.DropDownItems.Add(style[1]);
+                    subItem.Click += AsDditem_Click;
+                    subItem.Tag = name;
+                }
+
+                if (name == asSpeaker)
+                {
+                    ((ToolStripMenuItem)subItem.OwnerItem).Checked = true;
+                    subItem.Checked = true;
+                }
+            }
+        }
+
+        private void VvVoiceListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            VvMakeVoiceList();
+        }
+
+        private void AsVoiceListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AsMakeVoiceList();
         }
     }
 }
