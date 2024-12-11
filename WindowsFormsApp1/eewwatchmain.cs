@@ -47,14 +47,13 @@ namespace eewwatch
             public bool Is_final { get; set; }
             public bool Is_training { get; set; }
             public string Alertflg { get; set; }
+            public double MaxCalcintensity { get; set; }
         }
 
         EewValue newValue, oldValue;
 
         Dictionary<string, EewValue> newValues;
         Dictionary<string, EewValue> oldValues;
-
-        double maxCalcintensity;
 
         private string outputPath;
         private string logPath;
@@ -390,18 +389,18 @@ namespace eewwatch
 
             if (newValue.Calcintensity != "")
             {
-                maxCalcintensity = int.Parse(newValue.Calcintensity.Substring(0, 1));
-                if (maxCalcintensity >= 5)
+                newValue.MaxCalcintensity = int.Parse(newValue.Calcintensity.Substring(0, 1));
+                if (newValue.MaxCalcintensity >= 5)
                 {
                     if (newValue.Calcintensity.Substring(1, 1) == "強")
                     {
-                        maxCalcintensity += 0.5;
+                        newValue.MaxCalcintensity += 0.5;
                     }
                 }
             }
             else
             {
-                maxCalcintensity = 0;
+                // nothing
             }
         }
 
@@ -452,7 +451,7 @@ namespace eewwatch
 
                 if (newValue.Is_cancel)
                 {
-                    if (oldValue.Is_cancel)
+                    if (!oldValue.Is_cancel)
                     {
                         talk("緊急地震速報が、キャンセルされました");
                     }
@@ -461,16 +460,16 @@ namespace eewwatch
                 if (newValue.Calcintensity != "")
                 {
                     calc = int.Parse(newValue.Calcintensity.Substring(0, 1));
-                    if (maxCalcintensity >= 5)
+                    if (calc >= 5)
                     {
                         if (newValue.Calcintensity.Substring(1, 1) == "強") calc += 0.5;
                     }
                 }
 
-                if (calc > maxCalcintensity)
+                if (calc > newValue.MaxCalcintensity)
                 {
                     talk("予想最大震度" + newValue.Calcintensity);
-                    maxCalcintensity = calc;
+                    newValue.MaxCalcintensity = calc;
                 }
 
                 return;
@@ -550,7 +549,7 @@ namespace eewwatch
                     if (newValue.Calcintensity != "")
                     {
                         calc = int.Parse(newValue.Calcintensity.Substring(0, 1));
-                        if (maxCalcintensity >= 5)
+                        if (calc >= 5)
                         {
                             if (newValue.Calcintensity.Substring(1, 1) == "強") calc += 0.5;
                         }
