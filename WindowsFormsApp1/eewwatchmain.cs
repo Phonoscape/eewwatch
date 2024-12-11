@@ -29,7 +29,6 @@ namespace eewwatch
 
         HttpClient web;
 
-        int warn;
         int interval;
 
         public class EewValue
@@ -51,6 +50,9 @@ namespace eewwatch
         }
 
         EewValue newValue, oldValue;
+
+        Dictionary<string, EewValue> newValues;
+        Dictionary<string, EewValue> oldValues;
 
         double maxCalcintensity;
 
@@ -129,7 +131,6 @@ namespace eewwatch
         {
             InitializeComponent();
 
-            warn = 0;
             interval = INTERVAL_WAIT;
 
             statusStrip1.Items.Add("");
@@ -187,8 +188,11 @@ namespace eewwatch
             outputPath = Application.StartupPath;
             logPath = outputPath + "\\log\\";
 
-            newValue = new EewValue();
-            oldValue = new EewValue();
+            newValue = null;
+            oldValue = null;
+
+            newValues = new Dictionary<string, EewValue>();
+            oldValues = new Dictionary<string, EewValue>();
 
             //            if (sss != null)
             //            {
@@ -295,25 +299,47 @@ namespace eewwatch
 
                 if (newValue.Report_id != "")
                 {
+                    oldValue = null;
+                    if (oldValues.ContainsKey(newValue.Report_id))
+                        oldValue = oldValues[newValue.Report_id];
+
                     CheckSpeak();
                     AddList();
-                    oldValue = newValue;
-                }
-                else if (oldValue.Report_id != "")
-                {
-                    talk("緊急地震速報の通知が終了しました");
-                    oldValue.Report_id = "";
+
+                    if (!newValue.Is_final)
+                    {
+                        if (oldValues.ContainsKey(newValue.Report_id))
+                        {
+                            oldValues[newValue.Report_id] = newValue;
+                        }
+                        else
+                        {
+                            oldValues.Add(newValue.Report_id, newValue);
+                        }
+                    }
+                    else
+                    {
+                        oldValues.Remove(newValue.Report_id);
+
+                        if (oldValues.Count == 0)
+                        {
+                            {
+                                talk("すべての緊急地震速報の通知が終了しました");
+                                interval = INTERVAL_WAIT;
+                            }
+                        }
+                    }
                 }
 
-                statusStrip1.Items[1].Text = warn > 0 ? "入電中" : "待機中";
+                statusStrip1.Items[1].Text = oldValues.Count > 0 ? "入電中" : "待機中";
+ 
+                timer1.Interval = interval;
+                timer1.Start();
             }
             else
             {
-                statusStrip1.Items[1].Text = "データ取得エラー";
+                statusStrip1.Items[1].Text = "取得エラー";
             }
-
-            timer1.Interval = interval;
-            timer1.Start();
         }
 
         private string GetWeb(string filename)
@@ -325,12 +351,12 @@ namespace eewwatch
             catch (HttpRequestException e)
             {
                 newValue.Message = "データがありません";
-                msg = "";
+                msg = string.Empty;
             }
             catch
             {
                 newValue.Message = "データがありません";
-                msg = "";
+                msg = string.Empty;
             }
             return msg;
         }
@@ -344,6 +370,8 @@ namespace eewwatch
             catch {
                 return;
             }
+
+            newValue = new EewValue();
 
             newValue.Message = eew.Result.Message;
             newValue.Report_time = eew.Report_time;
@@ -383,78 +411,69 @@ namespace eewwatch
 
             string talkmsg = string.Empty;
 
-            for (int i = 0; i < listView1.Items.Count; i++)
+            if (oldValue != null)
             {
-                if (listView1.Items[i].Text == newValue.Report_id)
+                if (oldValue.Alertflg != newValue.Alertflg)
                 {
-                    if (listView1.Items[i].SubItems[3].Text != newValue.Alertflg)
+                    if (newValue.Alertflg == "警報")
                     {
-                        if (newValue.Alertflg == "警報")
-                        {
-                            recTv();
-                        }
-
-                        talk("緊急地震速報が" + newValue.Alertflg + "、になりました");
+                        recTv();
                     }
 
-                    if (listView1.Items[i].SubItems[6].Text != newValue.Magunitude && 
-                        Convert.ToDouble(listView1.Items[i].SubItems[6].Text) < 5.0 && 
-                        Convert.ToDouble(newValue.Magunitude) >= 5.0)
-                    {
-                        talk("マグニチュードが、5.0、を超えました");
-                    }
-
-                    if (listView1.Items[i].SubItems[4].Text == "継続" && newValue.Is_final)
-                    {
-                        warn--;
-                        if ( warn <= 0 )
-                        {
-                            warn = 0;
-                            interval = INTERVAL_WAIT;
-                        }
-                        //talk("緊急地震速報が解除されました。");
-                        talk("最終報が通知されました");
-                    }
-
-                    if (listView1.Items[i].SubItems[2].Text != newValue.Report_num.ToString())
-                    {
-                        //                       if ( !Directory.Exists(outputPath+"\\log"))
-                        //                       {
-                        //                           Directory.CreateDirectory(outputPath + "\\log");
-                        //                       }
-
-                        Encoding enc2 = Encoding.UTF8;
-                        StreamWriter writer2 = new StreamWriter(logPath + newValue.Report_id.ToString() + ".txt", true, enc2);
-                        //                        writer2.WriteLine(msg.Result.ToString() + Environment.NewLine);
-                        writer2.WriteLine(msg);
-                        writer2.Close();
-                    }
-
-                    if (newValue.Is_cancel)
-                    {
-                        if (listView1.Items[i].SubItems[4].Text != "キャンセル")
-                        {
-                            talk("緊急地震速報が、キャンセルされました");
-                        }
-                    }
-
-                    if (newValue.Calcintensity != "")
-                    {
-                        calc = int.Parse(newValue.Calcintensity.Substring(0, 1));
-                        if (maxCalcintensity >= 5)
-                        {
-                            if (newValue.Calcintensity.Substring(1, 1) == "強") calc += 0.5;
-                        }
-                    }
-
-                    if (calc > maxCalcintensity)
-                    {
-                        talk("予想最大震度" + newValue.Calcintensity);
-                        maxCalcintensity = calc;
-                    }
-
-                    return;
+                    talk("緊急地震速報が" + newValue.Alertflg + "、になりました");
                 }
+
+                if (oldValue.Magunitude != newValue.Magunitude && 
+                    Convert.ToDouble(oldValue.Magunitude) < 5.0 && 
+                    Convert.ToDouble(newValue.Magunitude) >= 5.0)
+                {
+                    talk("マグニチュードが、5.0、を超えました");
+                }
+
+                if (!oldValue.Is_final && newValue.Is_final)
+                {
+                    //talk("緊急地震速報が解除されました。");
+                    talk("最終報が通知されました");
+                }
+
+                if (oldValue.Report_num != newValue.Report_num)
+                {
+                    //                       if ( !Directory.Exists(outputPath+"\\log"))
+                    //                       {
+                    //                           Directory.CreateDirectory(outputPath + "\\log");
+                    //                       }
+
+                    Encoding enc2 = Encoding.UTF8;
+                    StreamWriter writer2 = new StreamWriter(logPath + newValue.Report_id.ToString() + ".txt", true, enc2);
+                    //                        writer2.WriteLine(msg.Result.ToString() + Environment.NewLine);
+                    writer2.WriteLine(msg);
+                    writer2.Close();
+                }
+
+                if (newValue.Is_cancel)
+                {
+                    if (oldValue.Is_cancel)
+                    {
+                        talk("緊急地震速報が、キャンセルされました");
+                    }
+                }
+
+                if (newValue.Calcintensity != "")
+                {
+                    calc = int.Parse(newValue.Calcintensity.Substring(0, 1));
+                    if (maxCalcintensity >= 5)
+                    {
+                        if (newValue.Calcintensity.Substring(1, 1) == "強") calc += 0.5;
+                    }
+                }
+
+                if (calc > maxCalcintensity)
+                {
+                    talk("予想最大震度" + newValue.Calcintensity);
+                    maxCalcintensity = calc;
+                }
+
+                return;
             }
 
             // 初報登録
@@ -574,7 +593,7 @@ namespace eewwatch
         {
             BouyomiProcess = null;
 
-            Debug.WriteLine(text);
+            Debug.WriteLine("TALK:" + text);
 
             ShowNotify(text);
 
@@ -614,7 +633,7 @@ namespace eewwatch
                 case SSS_AivisSpeech:
                     AivisSpeech.AivisSpeech aivisSpeech = new AivisSpeech.AivisSpeech();
                     aivisSpeech.Init(vvSpeaker, vvTalkSpeed);
-                    aivisSpeech.Talk(Text);
+                    aivisSpeech.Talk(text);
                     break;
             }
         }
