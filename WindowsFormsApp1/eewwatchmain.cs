@@ -516,57 +516,77 @@ namespace eewwatch
 
         private void AddList()
         {
-            double calc = 0;
+            bool flgFirst = true;
+            ListViewItem list = null;
 
-            string[] val = new string[11];
-
-            for (int i=0;i<listView1.Items.Count;i++)
+            for (int i = 0; i < listView1.Items.Count; i++)
             {
-                if ( listView1.Items[i].Text == newValue.Report_id)
+                if (listView1.Items[i].Text == newValue.Report_id)
                 {
-                    listView1.Items[i].SubItems[0].Text = newValue.Report_id;
-                    listView1.Items[i].SubItems[1].Text = newValue.Report_time;
-                    listView1.Items[i].SubItems[2].Text = newValue.Report_num.ToString();
-
-                    if (newValue.Is_training)
-                    {
-                        listView1.Items[i].SubItems[3].Text = "訓練";
-                    }
-                    else
-                    {
-                        listView1.Items[i].SubItems[3].Text = newValue.Alertflg;
-                    }
-
-                    if (newValue.Is_cancel)
-                    {
-                        listView1.Items[i].SubItems[4].Text = "キャンセル";
-                    }
-                    else
-                    {
-                        listView1.Items[i].SubItems[4].Text = newValue.Is_final == true ? "最終" : "継続";
-                    }
-
-                    if (newValue.Calcintensity != "")
-                    {
-                        calc = int.Parse(newValue.Calcintensity.Substring(0, 1));
-                        if (calc >= 5)
-                        {
-                            if (newValue.Calcintensity.Substring(1, 1) == "強") calc += 0.5;
-                        }
-                    }
-
-                    listView1.Items[i].SubItems[5].Text = newValue.Region_name;
-                    listView1.Items[i].SubItems[6].Text = newValue.Magunitude;
-                    listView1.Items[i].SubItems[7].Text = newValue.Depth;
-                    listView1.Items[i].SubItems[8].Text = newValue.Calcintensity;
-                    listView1.Items[i].SubItems[9].Text = newValue.Longitude;
-                    listView1.Items[i].SubItems[10].Text = newValue.Latitude;
-
-                    return;
+                    list = listView1.Items[i];
+                    flgFirst = false;
+                    break;
                 }
             }
 
+            if (flgFirst)
+            {
+                AddFirst();
+            }
+            else
+            {
+                AddContinue(list);
+            }
+        }
+
+        private void AddContinue(ListViewItem list)
+        {
+            double calc = 0;
+
+            list.SubItems[0].Text = newValue.Report_id;
+            list.SubItems[1].Text = newValue.Report_time;
+            list.SubItems[2].Text = newValue.Report_num.ToString();
+
+            if (newValue.Is_training)
+            {
+                list.SubItems[3].Text = "訓練";
+            }
+            else
+            {
+                list.SubItems[3].Text = newValue.Alertflg;
+            }
+
+            if (newValue.Is_cancel)
+            {
+                list.SubItems[4].Text = "キャンセル";
+            }
+            else
+            {
+                list.SubItems[4].Text = newValue.Is_final == true ? "最終" : "継続";
+            }
+
+            if (newValue.Calcintensity != "")
+            {
+                calc = int.Parse(newValue.Calcintensity.Substring(0, 1));
+                if (calc >= 5)
+                {
+                    if (newValue.Calcintensity.Substring(1, 1) == "強") calc += 0.5;
+                }
+            }
+
+            list.SubItems[5].Text = newValue.Region_name;
+            list.SubItems[6].Text = newValue.Magunitude;
+            list.SubItems[7].Text = newValue.Depth;
+            list.SubItems[8].Text = newValue.Calcintensity;
+            list.SubItems[9].Text = newValue.Longitude;
+            list.SubItems[10].Text = newValue.Latitude;
+        }
+
+        private void AddFirst()
+        {
             // 初報登録
+            string[] val = new string[11];
+
             if (!Directory.Exists(logPath))
             {
                 Directory.CreateDirectory(logPath);
