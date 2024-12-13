@@ -406,74 +406,87 @@ namespace eewwatch
 
         private void CheckSpeak()
         {
-            double calc = 0;
-
-            string talkmsg = string.Empty;
-
             if (oldValue != null)
             {
-                if (oldValue.Alertflg != newValue.Alertflg)
-                {
-                    if (newValue.Alertflg == "警報")
-                    {
-                        recTv();
-                    }
-
-                    talk("緊急地震速報が" + newValue.Alertflg + "、になりました");
-                }
-
-                if (oldValue.Magunitude != newValue.Magunitude && 
-                    Convert.ToDouble(oldValue.Magunitude) < 5.0 && 
-                    Convert.ToDouble(newValue.Magunitude) >= 5.0)
-                {
-                    talk("マグニチュードが、5.0、を超えました");
-                }
-
-                if (!oldValue.Is_final && newValue.Is_final)
-                {
-                    //talk("緊急地震速報が解除されました。");
-                    talk("最終報が通知されました");
-                }
-
-                if (oldValue.Report_num != newValue.Report_num)
-                {
-                    //                       if ( !Directory.Exists(outputPath+"\\log"))
-                    //                       {
-                    //                           Directory.CreateDirectory(outputPath + "\\log");
-                    //                       }
-
-                    Encoding enc2 = Encoding.UTF8;
-                    StreamWriter writer2 = new StreamWriter(logPath + newValue.Report_id.ToString() + ".txt", true, enc2);
-                    //                        writer2.WriteLine(msg.Result.ToString() + Environment.NewLine);
-                    writer2.WriteLine(msg);
-                    writer2.Close();
-                }
-
-                if (newValue.Is_cancel)
-                {
-                    if (!oldValue.Is_cancel)
-                    {
-                        talk("緊急地震速報が、キャンセルされました");
-                    }
-                }
-
-                if (newValue.Calcintensity != "")
-                {
-                    calc = int.Parse(newValue.Calcintensity.Substring(0, 1));
-                    if (calc >= 5)
-                    {
-                        if (newValue.Calcintensity.Substring(1, 1) == "強") calc += 0.5;
-                    }
-                }
-
-                if (calc > newValue.MaxCalcintensity)
-                {
-                    talk("予想最大震度" + newValue.Calcintensity);
-                    newValue.MaxCalcintensity = calc;
-                }
-
-                return;
+                SpeakContinue();
             }
+            else
+            {
+                if (!newValue.Is_final)
+                {
+                    SpeakNew();
+                }
+            }
+        }
+
+        private void SpeakContinue()
+        {
+            double calc = 0;
+
+            if (oldValue.Alertflg != newValue.Alertflg)
+            {
+                if (newValue.Alertflg == "警報")
+                {
+                    recTv();
+                }
+
+                talk("緊急地震速報が" + newValue.Alertflg + "、になりました");
+            }
+
+            if (oldValue.Magunitude != newValue.Magunitude &&
+                Convert.ToDouble(oldValue.Magunitude) < 5.0 &&
+                Convert.ToDouble(newValue.Magunitude) >= 5.0)
+            {
+                talk("マグニチュードが、5.0、を超えました");
+            }
+
+            if (!oldValue.Is_final && newValue.Is_final)
+            {
+                //talk("緊急地震速報が解除されました。");
+                talk("最終報が通知されました");
+            }
+
+            if (oldValue.Report_num != newValue.Report_num)
+            {
+                //                       if ( !Directory.Exists(outputPath+"\\log"))
+                //                       {
+                //                           Directory.CreateDirectory(outputPath + "\\log");
+                //                       }
+
+                Encoding enc2 = Encoding.UTF8;
+                StreamWriter writer2 = new StreamWriter(logPath + newValue.Report_id.ToString() + ".txt", true, enc2);
+                //                        writer2.WriteLine(msg.Result.ToString() + Environment.NewLine);
+                writer2.WriteLine(msg);
+                writer2.Close();
+            }
+
+            if (newValue.Is_cancel)
+            {
+                if (!oldValue.Is_cancel)
+                {
+                    talk("緊急地震速報が、キャンセルされました");
+                }
+            }
+
+            if (newValue.Calcintensity != "")
+            {
+                calc = int.Parse(newValue.Calcintensity.Substring(0, 1));
+                if (calc >= 5)
+                {
+                    if (newValue.Calcintensity.Substring(1, 1) == "強") calc += 0.5;
+                }
+            }
+
+            if (calc > newValue.MaxCalcintensity)
+            {
+                talk("予想最大震度" + newValue.Calcintensity);
+                newValue.MaxCalcintensity = calc;
+            }
+        }
+
+        private void SpeakNew()
+        {
+            string talkmsg = string.Empty;
 
             // 初報登録
             if (!Directory.Exists(logPath))
@@ -495,13 +508,13 @@ namespace eewwatch
             {
                 string msg = string.Empty;
 
-                    foreach (var reg in kinken)
+                foreach (var reg in kinken)
+                {
+                    if (newValue.Region_name.Contains(reg))
                     {
-                        if (newValue.Region_name.Contains(reg))
-                        {
-                            msg = "揺れ注意。";
-                        }
+                        msg = "揺れ注意。";
                     }
+                }
 
                 talkmsg = msg + newValue.Region_name + "でマグニチュード" + newValue.Magunitude + "、予想最大震度" + newValue.Calcintensity + "の" + newValue.Alertflg + "が発表されました";
 
@@ -531,7 +544,10 @@ namespace eewwatch
 
             if (flgFirst)
             {
-                AddFirst();
+                if (!newValue.Is_final)
+                {
+                    AddFirst();
+                }
             }
             else
             {
