@@ -334,7 +334,7 @@ namespace VoiceBase
             public double postPhonemeLength { get; set; } = 0.0;
         }
 
-        public async void SetPreset(int id,double speedScale)
+        public void SetPreset(int id,double speedScale)
         {
             Preset preset = new Preset();
 
