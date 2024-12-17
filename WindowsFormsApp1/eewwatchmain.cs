@@ -333,12 +333,13 @@ namespace eewwatch
                 statusStrip1.Items[1].Text = oldValues.Count > 0 ? "入電中" : "待機中";
  
                 timer1.Interval = interval;
-                timer1.Start();
             }
             else
             {
                 statusStrip1.Items[1].Text = "取得エラー";
             }
+
+            timer1.Start();
         }
 
         private string GetWeb(string filename)
