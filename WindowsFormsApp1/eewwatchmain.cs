@@ -23,7 +23,9 @@ namespace eewwatch
         private static extern int VkKeyScan(char ch);
 
         //       static String URI = "http://www.kmoni.bosai.go.jp/new/webservice/hypo/eew/";
-        static String URI = "http://www.kmoni.bosai.go.jp/webservice/hypo/eew/";
+        //static String URI = "http://www.kmoni.bosai.go.jp/webservice/hypo/eew/";
+        static String URI = "https://www.lmoni.bosai.go.jp/monitor/webservice/hypo/eew/";
+        
         string msg;
         Eew eew;
 
@@ -54,6 +56,8 @@ namespace eewwatch
 
         Dictionary<string, EewValue> newValues;
         Dictionary<string, EewValue> oldValues;
+
+        int oldValuesCount = 0;
 
         private string outputPath;
         private string logPath;
@@ -296,36 +300,41 @@ namespace eewwatch
                 textBox1.Clear();
                 textBox1.Text = res;
 
-                if (newValue.Report_id != "")
+                if (newValue != null)
                 {
-                    oldValue = null;
-                    if (oldValues.ContainsKey(newValue.Report_id))
-                        oldValue = oldValues[newValue.Report_id];
-
-                    CheckSpeak();
-                    AddList();
-
-                    if (!newValue.Is_final)
+                    if (newValue.Report_id != "")
                     {
+                        oldValue = null;
                         if (oldValues.ContainsKey(newValue.Report_id))
+                            oldValue = oldValues[newValue.Report_id];
+
+                        CheckSpeak();
+                        AddList();
+
+                        if (!newValue.Is_final)
                         {
-                            oldValues[newValue.Report_id] = newValue;
+                            if (oldValues.ContainsKey(newValue.Report_id))
+                            {
+                                oldValues[newValue.Report_id] = newValue;
+                            }
+                            else
+                            {
+                                oldValues.Add(newValue.Report_id, newValue);
+                            }
                         }
                         else
                         {
-                            oldValues.Add(newValue.Report_id, newValue);
-                        }
-                    }
-                    else
-                    {
-                        oldValues.Remove(newValue.Report_id);
+                            oldValues.Remove(newValue.Report_id);
 
-                        if (oldValues.Count == 0)
-                        {
+                            if (oldValues.Count == 0 && oldValuesCount != oldValues.Count)
                             {
-                                talk("すべての緊急地震速報の通知が終了しました");
-                                interval = INTERVAL_WAIT;
+                                {
+                                    talk("すべての緊急地震速報の通知が終了しました");
+                                    interval = INTERVAL_WAIT;
+                                }
                             }
+
+                            oldValuesCount = oldValues.Count;
                         }
                     }
                 }
@@ -368,6 +377,7 @@ namespace eewwatch
                 eew = JsonConvert.DeserializeObject<Eew>(msg);
             }
             catch {
+                newValue = null;
                 return;
             }
 
@@ -668,7 +678,7 @@ namespace eewwatch
 
                 case SSS_AivisSpeech:
                     AivisSpeech.AivisSpeech aivisSpeech = new AivisSpeech.AivisSpeech();
-                    aivisSpeech.Init(vvSpeaker, vvTalkSpeed);
+                    aivisSpeech.Init(asSpeaker, asTalkSpeed);
                     aivisSpeech.Talk(text);
                     break;
             }
@@ -951,7 +961,7 @@ namespace eewwatch
             SetTalkMenu(talktype);
 
             AivisSpeech.AivisSpeech aivisSpeech = new AivisSpeech.AivisSpeech();
-            aivisSpeech.Init(vvSpeaker, vvTalkSpeed);
+            aivisSpeech.Init(asSpeaker, asTalkSpeed);
             aivisSpeech.Talk(demoMsg);
         }
 
@@ -998,7 +1008,7 @@ namespace eewwatch
             var item = (ToolStripMenuItem)sender;
             var owner = (ToolStripMenuItem)item.OwnerItem;
 
-            foreach (ToolStripMenuItem itemAll in VvVoiceListToolStripMenuItem.DropDownItems)
+            foreach (ToolStripMenuItem itemAll in AsVoiceListToolStripMenuItem.DropDownItems)
             {
                 itemAll.Checked = false;
                 foreach (ToolStripMenuItem subItemAll in itemAll.DropDownItems)
@@ -1010,12 +1020,12 @@ namespace eewwatch
             item.Checked = true;
             owner.Checked = true;
 
-            vvSpeaker = (string)item.Tag;
+            asSpeaker = (string)item.Tag;
 
             SetTalkMenu(SSS_AivisSpeech);
 
             AivisSpeech.AivisSpeech aivisSpeech = new AivisSpeech.AivisSpeech();
-            aivisSpeech.Init(vvSpeaker, vvTalkSpeed);
+            aivisSpeech.Init(asSpeaker, asTalkSpeed);
             aivisSpeech.Talk(demoMsg);
         }
 
