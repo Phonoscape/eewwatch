@@ -304,6 +304,8 @@ namespace eewwatch
                 {
                     if (newValue.Report_id != "")
                     {
+                        interval = INTERVAL_ACTIVE;
+
                         oldValue = null;
                         if (oldValues.ContainsKey(newValue.Report_id))
                             oldValue = oldValues[newValue.Report_id];
@@ -341,13 +343,13 @@ namespace eewwatch
 
                 statusStrip1.Items[1].Text = oldValues.Count > 0 ? "入電中" : "待機中";
  
-                timer1.Interval = interval;
             }
             else
             {
                 statusStrip1.Items[1].Text = "取得エラー";
             }
 
+            timer1.Interval = interval;
             timer1.Start();
         }
 
