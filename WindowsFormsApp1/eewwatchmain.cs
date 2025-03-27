@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net.Http;
-using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -74,7 +73,7 @@ namespace eewwatch
         List<System.Diagnostics.Process> TvtestProcess;
         System.Diagnostics.Process BouyomiProcess;
 
-        SpeechSynthesizer sss = null;
+        // SpeechSynthesizer sss = null;
 
         private const int SSS_SpeechSynthesizer = 0;
         private const int SSS_Bouyomichan = 1;
@@ -648,12 +647,12 @@ namespace eewwatch
             switch(talktype)
             {
                 case SSS_SpeechSynthesizer:
-                    sss = new SpeechSynthesizer();
+                    //sss = new SpeechSynthesizer();
 
-                    sss.SelectVoiceByHints(VoiceGender.Female);
-                    sss.Rate = 2;
+                    //sss.SelectVoiceByHints(VoiceGender.Female);
+                    //sss.Rate = 2;
 
-                    sss.SpeakAsync(text);
+                    //sss.SpeakAsync(text);
                     break;
 
                 case SSS_Bouyomichan:
