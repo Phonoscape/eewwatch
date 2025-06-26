@@ -1,24 +1,18 @@
 ﻿using System.Collections.Generic;
 
-namespace Voicevox
+namespace AivisSpeech
 {
-    class Voicevox : VoiceBase.VoiceBase
+    class AivisSpeech : VoiceBase.VoiceBase
     {
-        public readonly string defaultVoice = "ずんだもん_ノーマル";
+        public readonly string defaultVoice = "Anneli_ノーマル";
 
         public override void Init(string sp,int vvTalkSpeed)
         {
-            gobiList = new Dictionary<string, string>()
-            {
-                {"ずんだもん", "なのだ"}
-            };
+            gobiList = new Dictionary<string, string>();
 
-            intnationList = new Dictionary<string, double>()
-            {
-                {"Voidoll", 0.0 }
-            };
-
-            URL = "http://127.0.0.1:50021/";
+            intnationList = new Dictionary<string, double>();
+            
+            URL = "http://127.0.0.1:10101/";
 
             IsReady = ServiceCheckAsync();
             if (IsReady)
@@ -34,7 +28,6 @@ namespace Voicevox
                     else
                     {
                         speaker = defaultVoice;
-                        //isReady = SelectSpeakerAsync("ずんだもん", "ノーマル", speaker);
                     }
 
                     speakerID = speakerList[speaker];

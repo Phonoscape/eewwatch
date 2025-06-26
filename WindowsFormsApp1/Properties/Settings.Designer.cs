@@ -12,7 +12,7 @@ namespace EEWWatch.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.11.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.12.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -49,7 +49,7 @@ namespace EEWWatch.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("485")]
+        [global::System.Configuration.DefaultSettingValueAttribute("487")]
         public int Splitter_Distance {
             get {
                 return ((int)(this["Splitter_Distance"]));
@@ -206,36 +206,72 @@ namespace EEWWatch.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Type {
+        public int VvType {
             get {
-                return ((int)(this["Type"]));
+                return ((int)(this["VvType"]));
             }
             set {
-                this["Type"] = value;
+                this["VvType"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Speaker {
+        public string VvSpeaker {
             get {
-                return ((string)(this["Speaker"]));
+                return ((string)(this["VvSpeaker"]));
             }
             set {
-                this["Speaker"] = value;
+                this["VvSpeaker"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int TalkSpeed {
+        public int VvTalkSpeed {
             get {
-                return ((int)(this["TalkSpeed"]));
+                return ((int)(this["VvTalkSpeed"]));
             }
             set {
-                this["TalkSpeed"] = value;
+                this["VvTalkSpeed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int AsType {
+            get {
+                return ((int)(this["AsType"]));
+            }
+            set {
+                this["AsType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AsSpeaker {
+            get {
+                return ((string)(this["AsSpeaker"]));
+            }
+            set {
+                this["AsSpeaker"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int AsTalkSpeed {
+            get {
+                return ((int)(this["AsTalkSpeed"]));
+            }
+            set {
+                this["AsTalkSpeed"] = value;
             }
         }
     }
