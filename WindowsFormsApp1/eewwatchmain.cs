@@ -9,6 +9,7 @@ using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Windows.Devices.PointOfService.Provider;
 using Windows.UI.Notifications;
 
 namespace eewwatch
@@ -70,6 +71,10 @@ namespace eewwatch
 
         private string asSpeaker;
         private int asTalkSpeed;
+
+        private List<Icon> notifyIconIcon;
+        private int iconNo = 0;
+        private bool bActive = false;
 
         List<System.Diagnostics.Process> TvtestProcess;
         System.Diagnostics.Process BouyomiProcess;
@@ -171,6 +176,13 @@ namespace eewwatch
             listView1.Columns[10].Width = EEWWatch.Properties.Settings.Default.Column11;
 
             listView1.FullRowSelect = true;
+
+            notifyIconIcon = new List<Icon>();
+            notifyIconIcon.Add(EEWWatch.Properties.Resources.Icon_normal);
+            notifyIconIcon.Add(EEWWatch.Properties.Resources.Icon_warning);
+
+            notifyIcon1.Text = this.Text;
+            notifyIcon1.Icon = notifyIconIcon[0];
 
             vvSpeaker = EEWWatch.Properties.Settings.Default.VvSpeaker;
             vvTalkSpeed = EEWWatch.Properties.Settings.Default.VvTalkSpeed;
@@ -305,6 +317,7 @@ namespace eewwatch
                     if (newValue.Report_id != "")
                     {
                         interval = INTERVAL_ACTIVE;
+                        bActive = true;
 
                         oldValue = null;
                         if (oldValues.ContainsKey(newValue.Report_id))
@@ -333,6 +346,7 @@ namespace eewwatch
                                 {
                                     talk("すべての緊急地震速報の通知が終了しました");
                                     interval = INTERVAL_WAIT;
+                                    bActive = false;
                                 }
                             }
 
@@ -347,6 +361,23 @@ namespace eewwatch
             else
             {
                 statusStrip1.Items[1].Text = "取得エラー";
+            }
+
+            if (bActive)
+            {
+                notifyIcon1.Icon = notifyIconIcon[iconNo];
+                if (iconNo == 0)
+                {
+                    iconNo++;
+                }
+                else
+                {
+                    iconNo = 0;
+                }
+            }
+            else
+            {
+                notifyIcon1.Icon = notifyIconIcon[0];
             }
 
             timer1.Interval = interval;
@@ -1141,6 +1172,44 @@ namespace eewwatch
         private void AsVoiceListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AsMakeVoiceList();
+        }
+
+        private void eewwatchmain_StyleChanged_1(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.ShowInTaskbar = false;
+            }
+            else
+            {
+                this.ShowInTaskbar = true;
+            }
+        }
+
+        private void eewwatchmain_Resize_1(object sender, EventArgs e)
+        {
+            if(this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+            }
+            else
+            {
+                this.Show();
+            }
+        }
+
+        private void endToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+            }
         }
     }
 }
