@@ -317,11 +317,13 @@ namespace eewwatch
                     if (newValue.Report_id != "")
                     {
                         interval = INTERVAL_ACTIVE;
-                        bActive = true;
 
                         oldValue = null;
                         if (oldValues.ContainsKey(newValue.Report_id))
+                        {
                             oldValue = oldValues[newValue.Report_id];
+                            bActive = true;
+                        }
 
                         CheckSpeak();
                         AddList();
@@ -341,17 +343,15 @@ namespace eewwatch
                         {
                             oldValues.Remove(newValue.Report_id);
 
-                            if (oldValues.Count == 0 && oldValuesCount != oldValues.Count)
+                            if (oldValues.Count == 0 && oldValuesCount > 0)
                             {
-                                {
-                                    talk("すべての緊急地震速報の通知が終了しました");
-                                    interval = INTERVAL_WAIT;
-                                    bActive = false;
-                                }
+                                talk("すべての緊急地震速報の通知が終了しました");
+                                interval = INTERVAL_WAIT;
+                                bActive = false;
                             }
-
-                            oldValuesCount = oldValues.Count;
                         }
+
+                        oldValuesCount = oldValues.Count;
                     }
                 }
 
