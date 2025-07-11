@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using EEWWatch.Properties;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -1245,10 +1246,7 @@ namespace eewwatch
         {
             try
             {
-                Configuration config =
-                    System.Configuration.ConfigurationManager.OpenExeConfiguration(
-                        ConfigurationUserLevel.PerUserRoamingAndLocal);
-                return int.Parse(config.AppSettings.Settings[key].Value);
+                return (int)Settings.Default[key];
             }
             catch
             {
@@ -1260,10 +1258,7 @@ namespace eewwatch
         {
             try
             {
-                Configuration config =
-                    System.Configuration.ConfigurationManager.OpenExeConfiguration(
-                        ConfigurationUserLevel.PerUserRoamingAndLocal);
-                return config.AppSettings.Settings[key].Value;
+                return (string)Settings.Default[key];
             }
             catch
             {
@@ -1273,64 +1268,43 @@ namespace eewwatch
 
         private void writeConfig()
         {
-            Configuration config =
-                System.Configuration.ConfigurationManager.OpenExeConfiguration(
-                    ConfigurationUserLevel.PerUserRoamingAndLocal);
-
-
             if (this.WindowState == FormWindowState.Normal)
             {
-                writeInt(config, "X", this.Location.X);
-                writeInt(config, "Y", this.Location.Y);
-                writeInt(config, "Width", this.Size.Width);
-                writeInt(config, "Height", this.Size.Height);
+                writeInt("X", this.Location.X);
+                writeInt("Y", this.Location.Y);
+                writeInt("Width", this.Size.Width);
+                writeInt("Height", this.Size.Height);
             }
            else
             {
-                writeInt(config, "X", this.RestoreBounds.Location.X);
-                writeInt(config, "Y", this.RestoreBounds.Location.Y);
-                writeInt(config, "Width", this.RestoreBounds.Size.Width);
-                writeInt(config, "Height", this.RestoreBounds.Size.Height);
+                writeInt("X", this.RestoreBounds.Location.X);
+                writeInt("Y", this.RestoreBounds.Location.Y);
+                writeInt("Width", this.RestoreBounds.Size.Width);
+                writeInt("Height", this.RestoreBounds.Size.Height);
             }
 
-            writeInt(config, "SplitterDistance", this.splitContainer1.SplitterDistance);
+            writeInt("SplitterDistance", this.splitContainer1.SplitterDistance);
 
             for (int i = 0;i < listView1.Columns.Count; i++)
             {
-                writeInt(config, "Column" + (i + 1), listView1.Columns[i].Width);
+                writeInt("Column" + (i + 1), listView1.Columns[i].Width);
             }
 
-            writeInt(config, "Talk", talktype);
-            writeString(config, "VvSpeaker", vvSpeaker);
-            writeInt(config, "VvTalkSpeed", vvTalkSpeed);
-            writeString(config, "AsSpeaker", asSpeaker);
-            writeInt(config, "AsTalkSpeed", asTalkSpeed);
-
-            config.Save(ConfigurationSaveMode.Modified);
+            writeInt("Talk", talktype);
+            writeString("VvSpeaker", vvSpeaker);
+            writeInt("VvTalkSpeed", vvTalkSpeed);
+            writeString("AsSpeaker", asSpeaker);
+            writeInt("AsTalkSpeed", asTalkSpeed);
         }
 
-        private void writeInt(Configuration config, string key, int value)
+        private void writeInt( string key, int value)
         {
-            try
-            {
-                config.AppSettings.Settings[key].Value = value.ToString();
-            }
-            catch (ConfigurationErrorsException)
-            {
-                 config.AppSettings.Settings.Add(key, value.ToString());
-            }
+            Settings.Default[key] = value;
         }
 
-        private void writeString(Configuration config, string key, string value)
+        private void writeString(string key, string value)
         {
-            if (config.AppSettings.Settings[key] == null)
-            {
-                config.AppSettings.Settings.Add(key, value.ToString());
-            }
-            else
-            {
-                config.AppSettings.Settings[key].Value = value;
-            }
+            Settings.Default[key] = value;
         }
     }
 }

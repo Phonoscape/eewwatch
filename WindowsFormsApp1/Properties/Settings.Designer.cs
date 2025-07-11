@@ -25,37 +25,121 @@ namespace EEWWatch.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0, 17")]
-        public global::System.Drawing.Point Form_Location {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int X {
             get {
-                return ((global::System.Drawing.Point)(this["Form_Location"]));
+                return ((int)(this["X"]));
             }
             set {
-                this["Form_Location"] = value;
+                this["X"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1066, 562")]
-        public global::System.Drawing.Size Form_Size {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Y {
             get {
-                return ((global::System.Drawing.Size)(this["Form_Size"]));
+                return ((int)(this["Y"]));
             }
             set {
-                this["Form_Size"] = value;
+                this["Y"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("487")]
-        public int Splitter_Distance {
+        [global::System.Configuration.DefaultSettingValueAttribute("640")]
+        public int Width {
             get {
-                return ((int)(this["Splitter_Distance"]));
+                return ((int)(this["Width"]));
             }
             set {
-                this["Splitter_Distance"] = value;
+                this["Width"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("480")]
+        public int Height {
+            get {
+                return ((int)(this["Height"]));
+            }
+            set {
+                this["Height"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Talk {
+            get {
+                return ((int)(this["Talk"]));
+            }
+            set {
+                this["Talk"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("240")]
+        public int SplitterDistance {
+            get {
+                return ((int)(this["SplitterDistance"]));
+            }
+            set {
+                this["SplitterDistance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string VvSpeaker {
+            get {
+                return ((string)(this["VvSpeaker"]));
+            }
+            set {
+                this["VvSpeaker"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int VvTalkSpeed {
+            get {
+                return ((int)(this["VvTalkSpeed"]));
+            }
+            set {
+                this["VvTalkSpeed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AsSpeaker {
+            get {
+                return ((string)(this["AsSpeaker"]));
+            }
+            set {
+                this["AsSpeaker"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int AsTalkSpeed {
+            get {
+                return ((int)(this["AsTalkSpeed"]));
+            }
+            set {
+                this["AsTalkSpeed"] = value;
             }
         }
         
@@ -188,90 +272,6 @@ namespace EEWWatch.Properties {
             }
             set {
                 this["Column11"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Talk {
-            get {
-                return ((int)(this["Talk"]));
-            }
-            set {
-                this["Talk"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int VvType {
-            get {
-                return ((int)(this["VvType"]));
-            }
-            set {
-                this["VvType"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string VvSpeaker {
-            get {
-                return ((string)(this["VvSpeaker"]));
-            }
-            set {
-                this["VvSpeaker"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int VvTalkSpeed {
-            get {
-                return ((int)(this["VvTalkSpeed"]));
-            }
-            set {
-                this["VvTalkSpeed"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int AsType {
-            get {
-                return ((int)(this["AsType"]));
-            }
-            set {
-                this["AsType"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AsSpeaker {
-            get {
-                return ((string)(this["AsSpeaker"]));
-            }
-            set {
-                this["AsSpeaker"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int AsTalkSpeed {
-            get {
-                return ((int)(this["AsTalkSpeed"]));
-            }
-            set {
-                this["AsTalkSpeed"] = value;
             }
         }
     }
