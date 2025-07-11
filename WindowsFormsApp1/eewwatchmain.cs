@@ -9,7 +9,6 @@ using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Windows.Devices.PointOfService.Provider;
 using Windows.UI.Notifications;
 
 namespace eewwatch

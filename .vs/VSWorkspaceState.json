@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\WindowsFormsApp1",
+    "\\WindowsFormsApp1\\Properties"
   ],
-  "SelectedNode": "\\eewwatch.sln",
+  "SelectedNode": "\\WindowsFormsApp1\\Properties\\Settings.settings",
   "PreviewInSolutionExplorer": false
 }
