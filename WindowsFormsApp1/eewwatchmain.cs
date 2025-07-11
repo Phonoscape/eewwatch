@@ -790,7 +790,7 @@ namespace eewwatch
 
         private void LoadOldData()
         {
-            try { 
+            try {
                 if (!Directory.Exists(logPath))
                 {
                     Directory.CreateDirectory(logPath);
@@ -1203,7 +1203,7 @@ namespace eewwatch
 
             this.splitContainer1.SplitterDistance = splitterDistance;
 
-            for(int i = 1; i <= 11; i++)
+            for (int i = 1; i <= 11; i++)
             {
                 strval = readString("Column" + i);
                 if (strval == string.Empty)
@@ -1280,40 +1280,57 @@ namespace eewwatch
 
             if (this.WindowState == FormWindowState.Normal)
             {
-                config.AppSettings.Settings["X"].Value = this.Location.X.ToString();
-                config.AppSettings.Settings["Y"].Value = this.Location.Y.ToString();
-                config.AppSettings.Settings["Width"].Value = this.Size.Width.ToString();
-                config.AppSettings.Settings["Height"].Value = this.Size.Height.ToString();
+                writeInt(config, "X", this.Location.X);
+                writeInt(config, "Y", this.Location.Y);
+                writeInt(config, "Width", this.Size.Width);
+                writeInt(config, "Height", this.Size.Height);
+            }
+           else
+            {
+                writeInt(config, "X", this.RestoreBounds.Location.X);
+                writeInt(config, "Y", this.RestoreBounds.Location.Y);
+                writeInt(config, "Width", this.RestoreBounds.Size.Width);
+                writeInt(config, "Height", this.RestoreBounds.Size.Height);
+            }
+
+            writeInt(config, "SplitterDistance", this.splitContainer1.SplitterDistance);
+
+            for (int i = 0;i < listView1.Columns.Count; i++)
+            {
+                writeInt(config, "Column" + (i + 1), listView1.Columns[i].Width);
+            }
+
+            writeInt(config, "Talk", talktype);
+            writeString(config, "VvSpeaker", vvSpeaker);
+            writeInt(config, "VvTalkSpeed", vvTalkSpeed);
+            writeString(config, "AsSpeaker", asSpeaker);
+            writeInt(config, "AsTalkSpeed", asTalkSpeed);
+
+            config.Save(ConfigurationSaveMode.Modified);
+        }
+
+        private void writeInt(Configuration config, string key, int value)
+        {
+            try
+            {
+                config.AppSettings.Settings[key].Value = value.ToString();
+            }
+            catch (ConfigurationErrorsException)
+            {
+                 config.AppSettings.Settings.Add(key, value.ToString());
+            }
+        }
+
+        private void writeString(Configuration config, string key, string value)
+        {
+            if (config.AppSettings.Settings[key] == null)
+            {
+                config.AppSettings.Settings.Add(key, value.ToString());
             }
             else
             {
-                config.AppSettings.Settings["X"].Value = this.RestoreBounds.Location.X.ToString();
-                config.AppSettings.Settings["Y"].Value = this.RestoreBounds.Location.Y.ToString();
-                config.AppSettings.Settings["Width"].Value = this.RestoreBounds.Size.Width.ToString();
-                config.AppSettings.Settings["Height"].Value = this.RestoreBounds.Size.Height.ToString();
+                config.AppSettings.Settings[key].Value = value;
             }
-
-            config.AppSettings.Settings["SplitterDistance"].Value = this.splitContainer1.SplitterDistance.ToString();
-
-            config.AppSettings.Settings["Column1"].Value = listView1.Columns[0].Width.ToString();
-            config.AppSettings.Settings["Column2"].Value = listView1.Columns[1].Width.ToString();
-            config.AppSettings.Settings["Column3"].Value = listView1.Columns[2].Width.ToString();
-            config.AppSettings.Settings["Column4"].Value = listView1.Columns[3].Width.ToString();
-            config.AppSettings.Settings["Column5"].Value = listView1.Columns[4].Width.ToString();
-            config.AppSettings.Settings["Column6"].Value = listView1.Columns[5].Width.ToString();
-            config.AppSettings.Settings["Column7"].Value = listView1.Columns[6].Width.ToString();
-            config.AppSettings.Settings["Column8"].Value = listView1.Columns[7].Width.ToString();
-            config.AppSettings.Settings["Column9"].Value = listView1.Columns[8].Width.ToString();
-            config.AppSettings.Settings["Column10"].Value = listView1.Columns[9].Width.ToString();
-            config.AppSettings.Settings["Column11"].Value = listView1.Columns[10].Width.ToString();
-
-            config.AppSettings.Settings["Talk"].Value = talktype.ToString();
-            config.AppSettings.Settings["VvSpeaker"].Value = vvSpeaker;
-            config.AppSettings.Settings["VvTalkSpeed"].Value = vvTalkSpeed.ToString();
-            config.AppSettings.Settings["AsSpeaker"].Value = asSpeaker;
-            config.AppSettings.Settings["AsTalkSpeed"].Value = asTalkSpeed.ToString();
-
-            config.Save(ConfigurationSaveMode.Modified);
         }
     }
 }
