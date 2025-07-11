@@ -790,6 +790,24 @@ namespace eewwatch
 
         private void LoadOldData()
         {
+            try { 
+                if (!Directory.Exists(logPath))
+                {
+                    Directory.CreateDirectory(logPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ログディレクトリの作成に失敗しました。\n" + ex.Message);
+                return;
+            }
+
+            if (!Directory.Exists(logPath))
+            {
+                MessageBox.Show("ログディレクトリが存在しません。\n" + logPath);
+                return;
+            }
+
             var lists = Directory.GetFiles(logPath);
             Array.Sort(lists, StringComparer.OrdinalIgnoreCase);
 
