@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -25,7 +27,7 @@ namespace eewwatch
         //       static String URI = "http://www.kmoni.bosai.go.jp/new/webservice/hypo/eew/";
         //static String URI = "http://www.kmoni.bosai.go.jp/webservice/hypo/eew/";
         static String URI = "https://www.lmoni.bosai.go.jp/monitor/webservice/hypo/eew/";
-        
+
         string msg;
         Eew eew;
 
@@ -123,9 +125,9 @@ namespace eewwatch
 
         private bool _debug = false;
 
-        private List<string> kinken = new List<string>() { 
-            "宮城", 
-            "山形", 
+        private List<string> kinken = new List<string>() {
+            "宮城",
+            "山形",
             "福島",
             "秋田",
             "岩手",
@@ -157,22 +159,7 @@ namespace eewwatch
             listView1.Columns.Add("Longitude", "経度");
             listView1.Columns.Add("Latitude", "緯度");
 
-            this.Location = EEWWatch.Properties.Settings.Default.Form_Location;
-            this.Size = EEWWatch.Properties.Settings.Default.Form_Size;
-
-            this.splitContainer1.SplitterDistance = EEWWatch.Properties.Settings.Default.Splitter_Distance;
-
-            listView1.Columns[0].Width = EEWWatch.Properties.Settings.Default.Column1;
-            listView1.Columns[1].Width = EEWWatch.Properties.Settings.Default.Column2;
-            listView1.Columns[2].Width = EEWWatch.Properties.Settings.Default.Column3;
-            listView1.Columns[3].Width = EEWWatch.Properties.Settings.Default.Column4;
-            listView1.Columns[4].Width = EEWWatch.Properties.Settings.Default.Column5;
-            listView1.Columns[5].Width = EEWWatch.Properties.Settings.Default.Column6;
-            listView1.Columns[6].Width = EEWWatch.Properties.Settings.Default.Column7;
-            listView1.Columns[7].Width = EEWWatch.Properties.Settings.Default.Column8;
-            listView1.Columns[8].Width = EEWWatch.Properties.Settings.Default.Column9;
-            listView1.Columns[9].Width = EEWWatch.Properties.Settings.Default.Column10;
-            listView1.Columns[10].Width = EEWWatch.Properties.Settings.Default.Column11;
+            readConfig();
 
             listView1.FullRowSelect = true;
 
@@ -183,17 +170,11 @@ namespace eewwatch
             notifyIcon1.Text = this.Text;
             notifyIcon1.Icon = notifyIconIcon[0];
 
-            vvSpeaker = EEWWatch.Properties.Settings.Default.VvSpeaker;
-            vvTalkSpeed = EEWWatch.Properties.Settings.Default.VvTalkSpeed;
-            asSpeaker = EEWWatch.Properties.Settings.Default.AsSpeaker;
-            asTalkSpeed = EEWWatch.Properties.Settings.Default.AsTalkSpeed;
-
             VvMakeVoiceList();
             SetVvTalkSpeedMenu(vvTalkSpeed);
             AsMakeVoiceList();
             SetAsTalkSpeedMenu(asTalkSpeed);
 
-            talktype = EEWWatch.Properties.Settings.Default.Talk;
             SetTalkMenu(talktype);
 
             tvTestToolStripMenuItem.Checked = true;
@@ -253,7 +234,7 @@ namespace eewwatch
                     VoiceVoxToolStripMenuItem.Checked = true;
                     break;
                 case SSS_AivisSpeech:
-                    AivisSpeechToolStripMenuItem.Checked= true;
+                    AivisSpeechToolStripMenuItem.Checked = true;
                     break;
                 default:
                 case SSS_SpeechSynthesizer:
@@ -355,7 +336,7 @@ namespace eewwatch
                 }
 
                 statusStrip1.Items[1].Text = oldValues.Count > 0 ? "入電中" : "待機中";
- 
+
             }
             else
             {
@@ -675,7 +656,7 @@ namespace eewwatch
 
             ShowNotify(text);
 
-            switch(talktype)
+            switch (talktype)
             {
                 case SSS_SpeechSynthesizer:
                     sss = new SpeechSynthesizer();
@@ -795,9 +776,9 @@ namespace eewwatch
             </toast>
             */
 
-//            var images = xml.GetElementsByTagName("image");
-//            var src = images[0].Attributes.GetNamedItem("src");
-//            src.InnerText = "file:///" + Path.GetFullPath("images\\icon.png");
+            //            var images = xml.GetElementsByTagName("image");
+            //            var src = images[0].Attributes.GetNamedItem("src");
+            //            src.InnerText = "file:///" + Path.GetFullPath("images\\icon.png");
 
             var texts = xml.GetElementsByTagName("text");
             texts[0].AppendChild(xml.CreateTextNode(msg));
@@ -821,7 +802,7 @@ namespace eewwatch
                     StreamReader reader = new StreamReader(list, enc);
 
                     var msg = reader.ReadLine();
-                    while(msg != null)
+                    while (msg != null)
                     {
                         SetValue(msg);
                         AddList();
@@ -849,38 +830,7 @@ namespace eewwatch
         {
             web.Dispose();
 
-            if (this.WindowState == FormWindowState.Normal)
-            {
-                EEWWatch.Properties.Settings.Default.Form_Location = this.Location;
-                EEWWatch.Properties.Settings.Default.Form_Size = this.Size;
-            }
-            else
-            {
-                EEWWatch.Properties.Settings.Default.Form_Location = this.RestoreBounds.Location;
-                EEWWatch.Properties.Settings.Default.Form_Size = this.RestoreBounds.Size;
-            }
-
-            EEWWatch.Properties.Settings.Default.Splitter_Distance = this.splitContainer1.SplitterDistance;
-
-            EEWWatch.Properties.Settings.Default.Column1 = listView1.Columns[0].Width;
-            EEWWatch.Properties.Settings.Default.Column2 = listView1.Columns[1].Width;
-            EEWWatch.Properties.Settings.Default.Column3 = listView1.Columns[2].Width;
-            EEWWatch.Properties.Settings.Default.Column4 = listView1.Columns[3].Width;
-            EEWWatch.Properties.Settings.Default.Column5 = listView1.Columns[4].Width;
-            EEWWatch.Properties.Settings.Default.Column6 = listView1.Columns[5].Width;
-            EEWWatch.Properties.Settings.Default.Column7 = listView1.Columns[6].Width;
-            EEWWatch.Properties.Settings.Default.Column8 = listView1.Columns[7].Width;
-            EEWWatch.Properties.Settings.Default.Column9 = listView1.Columns[8].Width;
-            EEWWatch.Properties.Settings.Default.Column10 = listView1.Columns[9].Width;
-            EEWWatch.Properties.Settings.Default.Column11 = listView1.Columns[10].Width;
-
-            EEWWatch.Properties.Settings.Default.Talk = talktype;
-            EEWWatch.Properties.Settings.Default.VvSpeaker = vvSpeaker;
-            EEWWatch.Properties.Settings.Default.VvTalkSpeed = vvTalkSpeed;
-            EEWWatch.Properties.Settings.Default.AsSpeaker = asSpeaker;
-            EEWWatch.Properties.Settings.Default.AsTalkSpeed = asTalkSpeed;
-
-            EEWWatch.Properties.Settings.Default.Save();
+            writeConfig();
         }
 
         private void eewwatchmain_Load(object sender, EventArgs e)
@@ -896,7 +846,14 @@ namespace eewwatch
 
         private void eewwatchmain_Resize(object sender, EventArgs e)
         {
-
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+            }
+            else
+            {
+                this.Show();
+            }
         }
 
         private void eewwatchmain_Move(object sender, EventArgs e)
@@ -1014,7 +971,7 @@ namespace eewwatch
             var item = (ToolStripMenuItem)sender;
             var owner = (ToolStripMenuItem)item.OwnerItem;
 
-            foreach(ToolStripMenuItem itemAll in VvVoiceListToolStripMenuItem.DropDownItems)
+            foreach (ToolStripMenuItem itemAll in VvVoiceListToolStripMenuItem.DropDownItems)
             {
                 itemAll.Checked = false;
                 foreach (ToolStripMenuItem subItemAll in itemAll.DropDownItems)
@@ -1185,18 +1142,6 @@ namespace eewwatch
             }
         }
 
-        private void eewwatchmain_Resize_1(object sender, EventArgs e)
-        {
-            if(this.WindowState == FormWindowState.Minimized)
-            {
-                this.Hide();
-            }
-            else
-            {
-                this.Show();
-            }
-        }
-
         private void endToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
@@ -1209,6 +1154,148 @@ namespace eewwatch
                 this.Show();
                 this.WindowState = FormWindowState.Normal;
             }
+        }
+
+        private void readConfig()
+        {
+            int intval = 0;
+            string strval = string.Empty;
+
+            Configuration config =
+                System.Configuration.ConfigurationManager.OpenExeConfiguration(
+                    ConfigurationUserLevel.PerUserRoamingAndLocal);
+
+            int x = readInt("X");
+            if (x < 0) x = 100;
+            int y = readInt("Y");
+            if (y < 0) y = 100;
+            int w = readInt("Width");
+            if (w < 0) w = 800;
+            int h = readInt("Height");
+            if (h < 0) h = 600;
+
+            this.Location = new Point(x, y);
+            this.Size = new Size(w, h);
+
+            int splitterDistance = readInt("SplitterDistance");
+            if (splitterDistance < 0)
+            {
+                splitterDistance = 200;
+            }
+
+            this.splitContainer1.SplitterDistance = splitterDistance;
+
+            for(int i = 1; i <= 11; i++)
+            {
+                strval = readString("Column" + i);
+                if (strval == string.Empty)
+                {
+                    intval = 100;
+                }
+                else
+                {
+                    intval = int.Parse(strval);
+                }
+                if (intval < 0) intval = 100;
+                if (listView1.Columns.Count >= i)
+                {
+                    listView1.Columns[i - 1].Width = intval;
+                }
+            }
+
+            vvSpeaker = readString("VvSpeaker");
+            vvTalkSpeed = readInt("VvTalkSpeed");
+            if (vvTalkSpeed < 0)
+            {
+                vvTalkSpeed = SSS_VV_Speed_Fast;
+            }
+            asSpeaker = readString("AsSpeaker");
+            asTalkSpeed = readInt("AsTalkSpeed");
+            if (asTalkSpeed < 0)
+            {
+                asTalkSpeed = SSS_AS_Speed_Fast;
+            }
+
+            talktype = readInt("Talk");
+            if (talktype < 0 || talktype > SSS_AivisSpeech)
+            {
+                talktype = SSS_SpeechSynthesizer;
+            }
+        }
+
+        private int readInt(string key)
+        {
+            try
+            {
+                Configuration config =
+                    System.Configuration.ConfigurationManager.OpenExeConfiguration(
+                        ConfigurationUserLevel.PerUserRoamingAndLocal);
+                return int.Parse(config.AppSettings.Settings[key].Value);
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        private string readString(string key)
+        {
+            try
+            {
+                Configuration config =
+                    System.Configuration.ConfigurationManager.OpenExeConfiguration(
+                        ConfigurationUserLevel.PerUserRoamingAndLocal);
+                return config.AppSettings.Settings[key].Value;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        private void writeConfig()
+        {
+            Configuration config =
+                System.Configuration.ConfigurationManager.OpenExeConfiguration(
+                    ConfigurationUserLevel.PerUserRoamingAndLocal);
+
+
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                config.AppSettings.Settings["X"].Value = this.Location.X.ToString();
+                config.AppSettings.Settings["Y"].Value = this.Location.Y.ToString();
+                config.AppSettings.Settings["Width"].Value = this.Size.Width.ToString();
+                config.AppSettings.Settings["Height"].Value = this.Size.Height.ToString();
+            }
+            else
+            {
+                config.AppSettings.Settings["X"].Value = this.RestoreBounds.Location.X.ToString();
+                config.AppSettings.Settings["Y"].Value = this.RestoreBounds.Location.Y.ToString();
+                config.AppSettings.Settings["Width"].Value = this.RestoreBounds.Size.Width.ToString();
+                config.AppSettings.Settings["Height"].Value = this.RestoreBounds.Size.Height.ToString();
+            }
+
+            config.AppSettings.Settings["SplitterDistance"].Value = this.splitContainer1.SplitterDistance.ToString();
+
+            config.AppSettings.Settings["Column1"].Value = listView1.Columns[0].Width.ToString();
+            config.AppSettings.Settings["Column2"].Value = listView1.Columns[1].Width.ToString();
+            config.AppSettings.Settings["Column3"].Value = listView1.Columns[2].Width.ToString();
+            config.AppSettings.Settings["Column4"].Value = listView1.Columns[3].Width.ToString();
+            config.AppSettings.Settings["Column5"].Value = listView1.Columns[4].Width.ToString();
+            config.AppSettings.Settings["Column6"].Value = listView1.Columns[5].Width.ToString();
+            config.AppSettings.Settings["Column7"].Value = listView1.Columns[6].Width.ToString();
+            config.AppSettings.Settings["Column8"].Value = listView1.Columns[7].Width.ToString();
+            config.AppSettings.Settings["Column9"].Value = listView1.Columns[8].Width.ToString();
+            config.AppSettings.Settings["Column10"].Value = listView1.Columns[9].Width.ToString();
+            config.AppSettings.Settings["Column11"].Value = listView1.Columns[10].Width.ToString();
+
+            config.AppSettings.Settings["Talk"].Value = talktype.ToString();
+            config.AppSettings.Settings["VvSpeaker"].Value = vvSpeaker;
+            config.AppSettings.Settings["VvTalkSpeed"].Value = vvTalkSpeed.ToString();
+            config.AppSettings.Settings["AsSpeaker"].Value = asSpeaker;
+            config.AppSettings.Settings["AsTalkSpeed"].Value = asTalkSpeed.ToString();
+
+            config.Save(ConfigurationSaveMode.Modified);
         }
     }
 }
