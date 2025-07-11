@@ -139,6 +139,7 @@ namespace eewwatch
         public eewwatchmain()
         {
             InitializeComponent();
+            this.AutoScaleMode = AutoScaleMode.Dpi;
 
             interval = INTERVAL_WAIT;
 
@@ -323,15 +324,18 @@ namespace eewwatch
                         {
                             oldValues.Remove(newValue.Report_id);
 
-                            if (oldValues.Count == 0 && oldValuesCount > 0)
-                            {
-                                talk("すべての緊急地震速報の通知が終了しました");
-                                interval = INTERVAL_WAIT;
-                                bActive = false;
-                            }
                         }
 
                         oldValuesCount = oldValues.Count;
+                    }
+                    else
+                    {
+                        if (oldValues.Count == 0 && bActive)
+                        {
+                            talk("すべての緊急地震速報の通知が終了しました");
+                            interval = INTERVAL_WAIT;
+                            bActive = false;
+                        }
                     }
                 }
 
@@ -1179,18 +1183,14 @@ namespace eewwatch
             int intval = 0;
             string strval = string.Empty;
 
-            Configuration config =
-                System.Configuration.ConfigurationManager.OpenExeConfiguration(
-                    ConfigurationUserLevel.PerUserRoamingAndLocal);
-
             int x = readInt("X");
-            if (x < 0) x = 100;
+            if (x <= 0) x = 100;
             int y = readInt("Y");
-            if (y < 0) y = 100;
+            if (y <= 0) y = 100;
             int w = readInt("Width");
-            if (w < 0) w = 800;
+            if (w <= 0) w = 800;
             int h = readInt("Height");
-            if (h < 0) h = 600;
+            if (h <= 0) h = 600;
 
             this.Location = new Point(x, y);
             this.Size = new Size(w, h);
@@ -1205,20 +1205,9 @@ namespace eewwatch
 
             for (int i = 1; i <= 11; i++)
             {
-                strval = readString("Column" + i);
-                if (strval == string.Empty)
-                {
-                    intval = 100;
-                }
-                else
-                {
-                    intval = int.Parse(strval);
-                }
-                if (intval < 0) intval = 100;
-                if (listView1.Columns.Count >= i)
-                {
-                    listView1.Columns[i - 1].Width = intval;
-                }
+                intval = readInt("Column" + i);
+                if (intval < 0) intval = 60;
+                listView1.Columns[i - 1].Width = intval;
             }
 
             vvSpeaker = readString("VvSpeaker");
@@ -1294,6 +1283,8 @@ namespace eewwatch
             writeInt("VvTalkSpeed", vvTalkSpeed);
             writeString("AsSpeaker", asSpeaker);
             writeInt("AsTalkSpeed", asTalkSpeed);
+
+            Settings.Default.Save();
         }
 
         private void writeInt( string key, int value)
