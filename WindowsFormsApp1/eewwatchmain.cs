@@ -303,6 +303,9 @@ namespace eewwatch
                         if (oldValues.ContainsKey(newValue.Report_id))
                         {
                             oldValue = oldValues[newValue.Report_id];
+                        }
+                        else 
+                        { 
                             bActive = true;
                         }
 
@@ -330,7 +333,7 @@ namespace eewwatch
                     }
                     else
                     {
-                        if (oldValues.Count == 0 && bActive)
+                        if (bActive)
                         {
                             talk("すべての緊急地震速報の通知が終了しました");
                             interval = INTERVAL_WAIT;
