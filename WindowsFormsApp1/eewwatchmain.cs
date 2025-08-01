@@ -2,8 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net.Http;
@@ -141,6 +139,8 @@ namespace eewwatch
             InitializeComponent();
             this.AutoScaleMode = AutoScaleMode.Dpi;
 
+            Log("## Start");
+
             interval = INTERVAL_WAIT;
 
             statusStrip1.Items.Add("");
@@ -246,6 +246,7 @@ namespace eewwatch
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            Log("## timer1_Tick");
             timer1.Stop();
 
             var date = System.DateTime.Now;
@@ -304,8 +305,8 @@ namespace eewwatch
                         {
                             oldValue = oldValues[newValue.Report_id];
                         }
-                        else 
-                        { 
+                        else
+                        {
                             bActive = true;
                         }
 
@@ -326,7 +327,6 @@ namespace eewwatch
                         else
                         {
                             oldValues.Remove(newValue.Report_id);
-
                         }
 
                         oldValuesCount = oldValues.Count;
@@ -373,6 +373,8 @@ namespace eewwatch
 
         private string GetWeb(string filename)
         {
+            Log("## GetWeb");
+
             try
             {
                 msg = web.GetStringAsync(filename).Result;
@@ -392,11 +394,14 @@ namespace eewwatch
 
         private void SetValue(string msg)
         {
+            Log("## SetValue");
+
             try
             {
                 eew = JsonConvert.DeserializeObject<Eew>(msg);
             }
-            catch {
+            catch
+            {
                 newValue = null;
                 return;
             }
@@ -588,6 +593,8 @@ namespace eewwatch
 
         private void AddContinue(ListViewItem list)
         {
+            Log("## AddContinue");
+
             double calc = 0;
 
             list.SubItems[0].Text = newValue.Report_id;
@@ -631,6 +638,8 @@ namespace eewwatch
 
         private void AddFirst()
         {
+            Log("## AddFirst");
+
             // 初報登録
             string[] val = new string[11];
 
@@ -659,7 +668,7 @@ namespace eewwatch
         {
             BouyomiProcess = null;
 
-            Debug.WriteLine("TALK:" + text);
+            Log("TALK: " + text);
 
             ShowNotify(text);
 
@@ -797,7 +806,8 @@ namespace eewwatch
 
         private void LoadOldData()
         {
-            try {
+            try
+            {
                 if (!Directory.Exists(logPath))
                 {
                     Directory.CreateDirectory(logPath);
@@ -1266,7 +1276,7 @@ namespace eewwatch
                 writeInt("Width", this.Size.Width);
                 writeInt("Height", this.Size.Height);
             }
-           else
+            else
             {
                 writeInt("X", this.RestoreBounds.Location.X);
                 writeInt("Y", this.RestoreBounds.Location.Y);
@@ -1276,7 +1286,7 @@ namespace eewwatch
 
             writeInt("SplitterDistance", this.splitContainer1.SplitterDistance);
 
-            for (int i = 0;i < listView1.Columns.Count; i++)
+            for (int i = 0; i < listView1.Columns.Count; i++)
             {
                 writeInt("Column" + (i + 1), listView1.Columns[i].Width);
             }
@@ -1290,7 +1300,7 @@ namespace eewwatch
             Settings.Default.Save();
         }
 
-        private void writeInt( string key, int value)
+        private void writeInt(string key, int value)
         {
             Settings.Default[key] = value;
         }
@@ -1298,6 +1308,14 @@ namespace eewwatch
         private void writeString(string key, string value)
         {
             Settings.Default[key] = value;
+        }
+
+        private void Log(string msg)
+        {
+            //string logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EEWWatch\\");
+            string logFile = Application.ExecutablePath + ".log";
+
+            LogUtil.LogUtil.Log(logFile, msg);
         }
     }
 }
