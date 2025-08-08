@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using EEWWatch.Properties;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net.Http;
@@ -25,7 +25,7 @@ namespace eewwatch
         //       static String URI = "http://www.kmoni.bosai.go.jp/new/webservice/hypo/eew/";
         //static String URI = "http://www.kmoni.bosai.go.jp/webservice/hypo/eew/";
         static String URI = "https://www.lmoni.bosai.go.jp/monitor/webservice/hypo/eew/";
-        
+
         string msg;
         Eew eew;
 
@@ -71,6 +71,11 @@ namespace eewwatch
         private string asSpeaker;
         private int asTalkSpeed;
 
+        private List<Icon> notifyIconIcon;
+        private int iconNo = 0;
+        private bool bActive = false;
+        private bool TopView = false;
+
         List<System.Diagnostics.Process> TvtestProcess;
         System.Diagnostics.Process BouyomiProcess;
 
@@ -111,17 +116,17 @@ namespace eewwatch
 
         private int talktype = SSS_Bouyomichan;
 
-        private int tvtest_Rec = 1;
-        private int tvtest_recend = 1;
+        private bool tvtest_Rec = true;
+        private bool tvtest_RecEnd = true;
 
         //static int INTERVAL_CHANGE_RECMODE = 1;
         //static int INTERVAL_CHANGE_RECMODE = 10000;
 
         private bool _debug = false;
 
-        private List<string> kinken = new List<string>() { 
-            "宮城", 
-            "山形", 
+        private List<string> kinken = new List<string>() {
+            "宮城",
+            "山形",
             "福島",
             "秋田",
             "岩手",
@@ -133,6 +138,9 @@ namespace eewwatch
         public eewwatchmain()
         {
             InitializeComponent();
+            this.AutoScaleMode = AutoScaleMode.Dpi;
+
+            Log("## Start");
 
             interval = INTERVAL_WAIT;
 
@@ -153,40 +161,27 @@ namespace eewwatch
             listView1.Columns.Add("Longitude", "経度");
             listView1.Columns.Add("Latitude", "緯度");
 
-            this.Location = EEWWatch.Properties.Settings.Default.Form_Location;
-            this.Size = EEWWatch.Properties.Settings.Default.Form_Size;
-
-            this.splitContainer1.SplitterDistance = EEWWatch.Properties.Settings.Default.Splitter_Distance;
-
-            listView1.Columns[0].Width = EEWWatch.Properties.Settings.Default.Column1;
-            listView1.Columns[1].Width = EEWWatch.Properties.Settings.Default.Column2;
-            listView1.Columns[2].Width = EEWWatch.Properties.Settings.Default.Column3;
-            listView1.Columns[3].Width = EEWWatch.Properties.Settings.Default.Column4;
-            listView1.Columns[4].Width = EEWWatch.Properties.Settings.Default.Column5;
-            listView1.Columns[5].Width = EEWWatch.Properties.Settings.Default.Column6;
-            listView1.Columns[6].Width = EEWWatch.Properties.Settings.Default.Column7;
-            listView1.Columns[7].Width = EEWWatch.Properties.Settings.Default.Column8;
-            listView1.Columns[8].Width = EEWWatch.Properties.Settings.Default.Column9;
-            listView1.Columns[9].Width = EEWWatch.Properties.Settings.Default.Column10;
-            listView1.Columns[10].Width = EEWWatch.Properties.Settings.Default.Column11;
+            readConfig();
 
             listView1.FullRowSelect = true;
 
-            vvSpeaker = EEWWatch.Properties.Settings.Default.VvSpeaker;
-            vvTalkSpeed = EEWWatch.Properties.Settings.Default.VvTalkSpeed;
-            asSpeaker = EEWWatch.Properties.Settings.Default.AsSpeaker;
-            asTalkSpeed = EEWWatch.Properties.Settings.Default.AsTalkSpeed;
+            notifyIconIcon = new List<Icon>();
+            notifyIconIcon.Add(EEWWatch.Properties.Resources.Icon_normal);
+            notifyIconIcon.Add(EEWWatch.Properties.Resources.Icon_warning);
+
+            notifyIcon1.Text = this.Text;
+            notifyIcon1.Icon = notifyIconIcon[0];
 
             VvMakeVoiceList();
             SetVvTalkSpeedMenu(vvTalkSpeed);
             AsMakeVoiceList();
             SetAsTalkSpeedMenu(asTalkSpeed);
 
-            talktype = EEWWatch.Properties.Settings.Default.Talk;
             SetTalkMenu(talktype);
 
-            tvTestToolStripMenuItem.Checked = true;
-            contEndToolStripMenuItem.Checked = true;
+            tvTestToolStripMenuItem.Checked = tvtest_Rec;
+            contEndToolStripMenuItem.Checked = tvtest_RecEnd;
+            TopToolStripMenuItem.Checked = TopView;
 
             outputPath = Application.StartupPath;
             logPath = outputPath + "\\log\\";
@@ -242,7 +237,7 @@ namespace eewwatch
                     VoiceVoxToolStripMenuItem.Checked = true;
                     break;
                 case SSS_AivisSpeech:
-                    AivisSpeechToolStripMenuItem.Checked= true;
+                    AivisSpeechToolStripMenuItem.Checked = true;
                     break;
                 default:
                 case SSS_SpeechSynthesizer:
@@ -253,6 +248,7 @@ namespace eewwatch
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            Log("## timer1_Tick");
             timer1.Stop();
 
             var date = System.DateTime.Now;
@@ -308,7 +304,13 @@ namespace eewwatch
 
                         oldValue = null;
                         if (oldValues.ContainsKey(newValue.Report_id))
+                        {
                             oldValue = oldValues[newValue.Report_id];
+                        }
+                        else
+                        {
+                            bActive = true;
+                        }
 
                         CheckSpeak();
                         AddList();
@@ -327,26 +329,42 @@ namespace eewwatch
                         else
                         {
                             oldValues.Remove(newValue.Report_id);
-
-                            if (oldValues.Count == 0 && oldValuesCount != oldValues.Count)
-                            {
-                                {
-                                    talk("すべての緊急地震速報の通知が終了しました");
-                                    interval = INTERVAL_WAIT;
-                                }
-                            }
-
-                            oldValuesCount = oldValues.Count;
                         }
+
+                        oldValuesCount = oldValues.Count;
                     }
                 }
 
+                if (oldValuesCount == 0 && bActive)
+                {
+                    talk("すべての緊急地震速報の通知が終了しました");
+                    interval = INTERVAL_WAIT;
+                    bActive = false;
+                }
+
                 statusStrip1.Items[1].Text = oldValues.Count > 0 ? "入電中" : "待機中";
- 
+
             }
             else
             {
                 statusStrip1.Items[1].Text = "取得エラー";
+            }
+
+            if (bActive)
+            {
+                notifyIcon1.Icon = notifyIconIcon[iconNo];
+                if (iconNo == 0)
+                {
+                    iconNo++;
+                }
+                else
+                {
+                    iconNo = 0;
+                }
+            }
+            else
+            {
+                notifyIcon1.Icon = notifyIconIcon[0];
             }
 
             timer1.Interval = interval;
@@ -355,6 +373,8 @@ namespace eewwatch
 
         private string GetWeb(string filename)
         {
+            Log("## GetWeb");
+
             try
             {
                 msg = web.GetStringAsync(filename).Result;
@@ -374,11 +394,14 @@ namespace eewwatch
 
         private void SetValue(string msg)
         {
+            Log("## SetValue");
+
             try
             {
                 eew = JsonConvert.DeserializeObject<Eew>(msg);
             }
-            catch {
+            catch
+            {
                 newValue = null;
                 return;
             }
@@ -560,6 +583,10 @@ namespace eewwatch
                 if (!newValue.Is_final)
                 {
                     AddFirst();
+                    if (TopView)
+                    {
+                        this.TopLevel = true;
+                    }
                 }
             }
             else
@@ -570,6 +597,8 @@ namespace eewwatch
 
         private void AddContinue(ListViewItem list)
         {
+            Log("## AddContinue");
+
             double calc = 0;
 
             list.SubItems[0].Text = newValue.Report_id;
@@ -613,6 +642,8 @@ namespace eewwatch
 
         private void AddFirst()
         {
+            Log("## AddFirst");
+
             // 初報登録
             string[] val = new string[11];
 
@@ -641,11 +672,11 @@ namespace eewwatch
         {
             BouyomiProcess = null;
 
-            Debug.WriteLine("TALK:" + text);
+            Log("TALK: " + text);
 
             ShowNotify(text);
 
-            switch(talktype)
+            switch (talktype)
             {
                 case SSS_SpeechSynthesizer:
                     sss = new SpeechSynthesizer();
@@ -712,10 +743,13 @@ namespace eewwatch
                 SendMessage(hwnd, WM_COMMAND, CM_RECORD_SHIFT, 0);
             }
 
-            recModeTimer.Interval = INTERVAL_CHANGE_RECMODE * 60 * 1000;
-            recModeTimer.Start();
+            if(tvtest_RecEnd)
+            {
+                recModeTimer.Interval = INTERVAL_CHANGE_RECMODE * 60 * 1000;
+                recModeTimer.Start();
+            }
 
-            if (tvTestToolStripMenuItem.Checked)
+            if (tvtest_Rec)
             {
                 talk("録画を開始しました");
                 if (contEndToolStripMenuItem.Checked)
@@ -725,9 +759,6 @@ namespace eewwatch
             }
         }
 
-        /*
-         * UI関連 
-         */
         private void recModeTimer_Tick(object sender, EventArgs e)
         {
             recModeTimer.Stop();
@@ -765,9 +796,9 @@ namespace eewwatch
             </toast>
             */
 
-//            var images = xml.GetElementsByTagName("image");
-//            var src = images[0].Attributes.GetNamedItem("src");
-//            src.InnerText = "file:///" + Path.GetFullPath("images\\icon.png");
+            //            var images = xml.GetElementsByTagName("image");
+            //            var src = images[0].Attributes.GetNamedItem("src");
+            //            src.InnerText = "file:///" + Path.GetFullPath("images\\icon.png");
 
             var texts = xml.GetElementsByTagName("text");
             texts[0].AppendChild(xml.CreateTextNode(msg));
@@ -779,6 +810,25 @@ namespace eewwatch
 
         private void LoadOldData()
         {
+            try
+            {
+                if (!Directory.Exists(logPath))
+                {
+                    Directory.CreateDirectory(logPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ログディレクトリの作成に失敗しました。\n" + ex.Message);
+                return;
+            }
+
+            if (!Directory.Exists(logPath))
+            {
+                MessageBox.Show("ログディレクトリが存在しません。\n" + logPath);
+                return;
+            }
+
             var lists = Directory.GetFiles(logPath);
             Array.Sort(lists, StringComparer.OrdinalIgnoreCase);
 
@@ -791,7 +841,7 @@ namespace eewwatch
                     StreamReader reader = new StreamReader(list, enc);
 
                     var msg = reader.ReadLine();
-                    while(msg != null)
+                    while (msg != null)
                     {
                         SetValue(msg);
                         AddList();
@@ -802,8 +852,12 @@ namespace eewwatch
                 }
                 listCount--;
             }
-
         }
+
+        /*
+         * Windows Form関連 
+         * 
+         */
 
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -819,38 +873,7 @@ namespace eewwatch
         {
             web.Dispose();
 
-            if (this.WindowState == FormWindowState.Normal)
-            {
-                EEWWatch.Properties.Settings.Default.Form_Location = this.Location;
-                EEWWatch.Properties.Settings.Default.Form_Size = this.Size;
-            }
-            else
-            {
-                EEWWatch.Properties.Settings.Default.Form_Location = this.RestoreBounds.Location;
-                EEWWatch.Properties.Settings.Default.Form_Size = this.RestoreBounds.Size;
-            }
-
-            EEWWatch.Properties.Settings.Default.Splitter_Distance = this.splitContainer1.SplitterDistance;
-
-            EEWWatch.Properties.Settings.Default.Column1 = listView1.Columns[0].Width;
-            EEWWatch.Properties.Settings.Default.Column2 = listView1.Columns[1].Width;
-            EEWWatch.Properties.Settings.Default.Column3 = listView1.Columns[2].Width;
-            EEWWatch.Properties.Settings.Default.Column4 = listView1.Columns[3].Width;
-            EEWWatch.Properties.Settings.Default.Column5 = listView1.Columns[4].Width;
-            EEWWatch.Properties.Settings.Default.Column6 = listView1.Columns[5].Width;
-            EEWWatch.Properties.Settings.Default.Column7 = listView1.Columns[6].Width;
-            EEWWatch.Properties.Settings.Default.Column8 = listView1.Columns[7].Width;
-            EEWWatch.Properties.Settings.Default.Column9 = listView1.Columns[8].Width;
-            EEWWatch.Properties.Settings.Default.Column10 = listView1.Columns[9].Width;
-            EEWWatch.Properties.Settings.Default.Column11 = listView1.Columns[10].Width;
-
-            EEWWatch.Properties.Settings.Default.Talk = talktype;
-            EEWWatch.Properties.Settings.Default.VvSpeaker = vvSpeaker;
-            EEWWatch.Properties.Settings.Default.VvTalkSpeed = vvTalkSpeed;
-            EEWWatch.Properties.Settings.Default.AsSpeaker = asSpeaker;
-            EEWWatch.Properties.Settings.Default.AsTalkSpeed = asTalkSpeed;
-
-            EEWWatch.Properties.Settings.Default.Save();
+            writeConfig();
         }
 
         private void eewwatchmain_Load(object sender, EventArgs e)
@@ -866,7 +889,14 @@ namespace eewwatch
 
         private void eewwatchmain_Resize(object sender, EventArgs e)
         {
-
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+            }
+            else
+            {
+                this.Show();
+            }
         }
 
         private void eewwatchmain_Move(object sender, EventArgs e)
@@ -889,6 +919,11 @@ namespace eewwatch
             VvMakeVoiceList();
             AsMakeVoiceList();
         }
+
+        /*
+         * メニュー処理
+         * 
+         */
 
         private void speechSynthesizerToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -913,11 +948,13 @@ namespace eewwatch
         private void TvTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tvTestToolStripMenuItem.Checked = !tvTestToolStripMenuItem.Checked;
+            tvtest_Rec = tvTestToolStripMenuItem.Checked;
         }
 
         private void ContEndToolStripMenuItem_Click(object sender, EventArgs e)
         {
             contEndToolStripMenuItem.Checked = !contEndToolStripMenuItem.Checked;
+            tvtest_RecEnd = contEndToolStripMenuItem.Checked;
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -984,7 +1021,7 @@ namespace eewwatch
             var item = (ToolStripMenuItem)sender;
             var owner = (ToolStripMenuItem)item.OwnerItem;
 
-            foreach(ToolStripMenuItem itemAll in VvVoiceListToolStripMenuItem.DropDownItems)
+            foreach (ToolStripMenuItem itemAll in VvVoiceListToolStripMenuItem.DropDownItems)
             {
                 itemAll.Checked = false;
                 foreach (ToolStripMenuItem subItemAll in itemAll.DropDownItems)
@@ -1141,6 +1178,202 @@ namespace eewwatch
         private void AsVoiceListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AsMakeVoiceList();
+        }
+
+        private void eewwatchmain_StyleChanged_1(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.ShowInTaskbar = false;
+            }
+            else
+            {
+                this.ShowInTaskbar = true;
+            }
+        }
+
+        private void endToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void topToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TopToolStripMenuItem.Checked = !TopToolStripMenuItem.Checked;
+            TopView = TopToolStripMenuItem.Checked;
+        }
+
+        /*
+         * ステータスバー処理 
+         * 
+         */
+
+        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+            }
+        }
+
+        /*
+         * Config処理 
+         * 
+         */
+
+        private void readConfig()
+        {
+            int intval = 0;
+            string strval = string.Empty;
+
+            int x = readInt("X");
+            if (x <= 0) x = 100;
+            int y = readInt("Y");
+            if (y <= 0) y = 100;
+            int w = readInt("Width");
+            if (w <= 0) w = 800;
+            int h = readInt("Height");
+            if (h <= 0) h = 600;
+
+            this.Location = new Point(x, y);
+            this.Size = new Size(w, h);
+
+            int splitterDistance = readInt("SplitterDistance");
+            if (splitterDistance < 0)
+            {
+                splitterDistance = 200;
+            }
+
+            this.splitContainer1.SplitterDistance = splitterDistance;
+
+            for (int i = 1; i <= 11; i++)
+            {
+                intval = readInt("Column" + i);
+                if (intval < 0) intval = 60;
+                listView1.Columns[i - 1].Width = intval;
+            }
+
+            vvSpeaker = readString("VvSpeaker");
+            vvTalkSpeed = readInt("VvTalkSpeed");
+            if (vvTalkSpeed < 0)
+            {
+                vvTalkSpeed = SSS_VV_Speed_Fast;
+            }
+            asSpeaker = readString("AsSpeaker");
+            asTalkSpeed = readInt("AsTalkSpeed");
+            if (asTalkSpeed < 0)
+            {
+                asTalkSpeed = SSS_AS_Speed_Fast;
+            }
+
+            talktype = readInt("Talk");
+            if (talktype < 0 || talktype > SSS_AivisSpeech)
+            {
+                talktype = SSS_SpeechSynthesizer;
+            }
+
+            TopView = readBool("TopView");
+            tvtest_Rec = readBool("Rec");
+            tvtest_RecEnd = readBool("RecEnd");
+        }
+
+        private int readInt(string key)
+        {
+            try
+            {
+                return (int)Settings.Default[key];
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+        private bool readBool(string key)
+        {
+            try
+            {
+                return (bool)Settings.Default[key];
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        private string readString(string key)
+        {
+            try
+            {
+                return (string)Settings.Default[key];
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        private void writeConfig()
+        {
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                writeInt("X", this.Location.X);
+                writeInt("Y", this.Location.Y);
+                writeInt("Width", this.Size.Width);
+                writeInt("Height", this.Size.Height);
+            }
+            else
+            {
+                writeInt("X", this.RestoreBounds.Location.X);
+                writeInt("Y", this.RestoreBounds.Location.Y);
+                writeInt("Width", this.RestoreBounds.Size.Width);
+                writeInt("Height", this.RestoreBounds.Size.Height);
+            }
+
+            writeInt("SplitterDistance", this.splitContainer1.SplitterDistance);
+
+            for (int i = 0; i < listView1.Columns.Count; i++)
+            {
+                writeInt("Column" + (i + 1), listView1.Columns[i].Width);
+            }
+
+            writeInt("Talk", talktype);
+            writeString("VvSpeaker", vvSpeaker);
+            writeInt("VvTalkSpeed", vvTalkSpeed);
+            writeString("AsSpeaker", asSpeaker);
+            writeInt("AsTalkSpeed", asTalkSpeed);
+
+            writeBool("TopView", TopView);
+            writeBool("Rec", tvtest_Rec);
+            writeBool("RecEnd", tvtest_RecEnd);
+
+            Settings.Default.Save();
+        }
+
+        private void writeInt(string key, int value)
+        {
+            Settings.Default[key] = value;
+        }
+        private void writeBool(string key, bool value)
+        {
+            Settings.Default[key] = value;
+        }
+
+        private void writeString(string key, string value)
+        {
+            Settings.Default[key] = value;
+        }
+
+        /*
+         * ログ処理 
+         * 
+         */
+
+        private void Log(string msg)
+        {
+            //string logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EEWWatch\\");
+            string logFile = Application.ExecutablePath + ".log";
+
+            LogUtil.LogUtil.Log(logFile, msg);
         }
     }
 }
