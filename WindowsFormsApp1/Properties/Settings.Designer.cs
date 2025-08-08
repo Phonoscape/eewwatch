@@ -274,5 +274,41 @@ namespace EEWWatch.Properties {
                 this["Column11"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Rec {
+            get {
+                return ((bool)(this["Rec"]));
+            }
+            set {
+                this["Rec"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool RecEnd {
+            get {
+                return ((bool)(this["RecEnd"]));
+            }
+            set {
+                this["RecEnd"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TopView {
+            get {
+                return ((bool)(this["TopView"]));
+            }
+            set {
+                this["TopView"] = value;
+            }
+        }
     }
 }

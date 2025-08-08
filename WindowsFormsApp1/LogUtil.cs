@@ -9,8 +9,6 @@ namespace LogUtil
     {
         public static void Log(string filename, string message)
         {
-            Debug.WriteLine(message);
-
             DateTime dateTime = DateTime.Now;
 
             Encoding enc = Encoding.UTF8;
@@ -20,6 +18,8 @@ namespace LogUtil
 
             writer.WriteLine(output);
             writer.Close();
+
+            Debug.WriteLine(output);
         }
     }
 }

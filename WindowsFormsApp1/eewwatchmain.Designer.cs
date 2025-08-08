@@ -28,332 +28,319 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(eewwatchmain));
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.recModeTimer = new System.Windows.Forms.Timer(this.components);
-            this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.talkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SpeechSynthesizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.BouyomichanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.VoiceVoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.VvFastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.VvSlowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.VvVoiceListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AivisSpeechToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AsFastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AsSlowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
-            this.AsVoiceListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.recToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tvTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contEndToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.notifyIconContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.endToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            this.mainMenuStrip.SuspendLayout();
-            this.notifyIconContextMenuStrip1.SuspendLayout();
-            this.SuspendLayout();
+            timer1 = new System.Windows.Forms.Timer(components);
+            statusStrip1 = new System.Windows.Forms.StatusStrip();
+            panel1 = new System.Windows.Forms.Panel();
+            splitContainer1 = new System.Windows.Forms.SplitContainer();
+            listView1 = new System.Windows.Forms.ListView();
+            textBox1 = new System.Windows.Forms.TextBox();
+            recModeTimer = new System.Windows.Forms.Timer(components);
+            mainMenuStrip = new System.Windows.Forms.MenuStrip();
+            fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            talkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            SpeechSynthesizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            BouyomichanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            VoiceVoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            VvFastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            VvSlowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            VvVoiceListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            AivisSpeechToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            AsFastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            AsSlowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+            AsVoiceListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            recToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            tvTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            contEndToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            notifyIcon1 = new System.Windows.Forms.NotifyIcon(components);
+            notifyIconContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
+            endToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            actionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            TopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            mainMenuStrip.SuspendLayout();
+            notifyIconContextMenuStrip1.SuspendLayout();
+            SuspendLayout();
             // 
             // timer1
             // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            timer1.Tick += timer1_Tick;
             // 
             // statusStrip1
             // 
-            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.statusStrip1.Location = new System.Drawing.Point(0, 821);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 22, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1444, 22);
-            this.statusStrip1.TabIndex = 3;
-            this.statusStrip1.Text = "statusStrip1";
+            statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            statusStrip1.Location = new System.Drawing.Point(0, 540);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 15, 0);
+            statusStrip1.Size = new System.Drawing.Size(963, 22);
+            statusStrip1.TabIndex = 3;
+            statusStrip1.Text = "statusStrip1";
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.splitContainer1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 33);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1444, 788);
-            this.panel1.TabIndex = 4;
+            panel1.Controls.Add(splitContainer1);
+            panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel1.Location = new System.Drawing.Point(0, 24);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(963, 516);
+            panel1.TabIndex = 4;
             // 
             // splitContainer1
             // 
-            //this.splitContainer1.DataBindings.Add(new System.Windows.Forms.Binding("SplitterDistance", global::EEWWatch.Properties.Settings.Default, "Splitter_Distance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer1.Location = new System.Drawing.Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.listView1);
+            splitContainer1.Panel1.Controls.Add(listView1);
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.textBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(1444, 788);
-            //this.splitContainer1.SplitterDistance = global::EEWWatch.Properties.Settings.Default.Splitter_Distance;
-            this.splitContainer1.SplitterDistance = 100;
-            this.splitContainer1.SplitterWidth = 6;
-            this.splitContainer1.TabIndex = 2;
+            splitContainer1.Panel2.Controls.Add(textBox1);
+            splitContainer1.Size = new System.Drawing.Size(963, 516);
+            splitContainer1.SplitterDistance = 65;
+            splitContainer1.TabIndex = 2;
             // 
             // listView1
             // 
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.listView1.MultiSelect = false;
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(1444, 743);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDoubleClick);
+            listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            listView1.Location = new System.Drawing.Point(0, 0);
+            listView1.MultiSelect = false;
+            listView1.Name = "listView1";
+            listView1.Size = new System.Drawing.Size(963, 65);
+            listView1.TabIndex = 0;
+            listView1.UseCompatibleStateImageBehavior = false;
+            listView1.View = System.Windows.Forms.View.Details;
+            listView1.MouseDoubleClick += listView1_MouseDoubleClick;
             // 
             // textBox1
             // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Location = new System.Drawing.Point(0, 0);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(1444, 39);
-            this.textBox1.TabIndex = 1;
+            textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            textBox1.Location = new System.Drawing.Point(0, 0);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.Size = new System.Drawing.Size(963, 447);
+            textBox1.TabIndex = 1;
             // 
             // recModeTimer
             // 
-            this.recModeTimer.Tick += new System.EventHandler(this.recModeTimer_Tick);
+            recModeTimer.Tick += recModeTimer_Tick;
             // 
             // mainMenuStrip
             // 
-            this.mainMenuStrip.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
-            this.mainMenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.talkToolStripMenuItem,
-            this.recToolStripMenuItem});
-            this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
-            this.mainMenuStrip.Name = "mainMenuStrip";
-            this.mainMenuStrip.Padding = new System.Windows.Forms.Padding(6, 2, 0, 2);
-            this.mainMenuStrip.Size = new System.Drawing.Size(1444, 33);
-            this.mainMenuStrip.TabIndex = 5;
-            this.mainMenuStrip.Text = "menuStrip1";
+            mainMenuStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
+            mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { fileToolStripMenuItem, talkToolStripMenuItem, recToolStripMenuItem, actionToolStripMenuItem });
+            mainMenuStrip.Location = new System.Drawing.Point(0, 0);
+            mainMenuStrip.Name = "mainMenuStrip";
+            mainMenuStrip.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            mainMenuStrip.Size = new System.Drawing.Size(963, 24);
+            mainMenuStrip.TabIndex = 5;
+            mainMenuStrip.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(98, 29);
-            this.fileToolStripMenuItem.Text = "ファイル(&F)";
+            fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { exitToolStripMenuItem });
+            fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            fileToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
+            fileToolStripMenuItem.Text = "ファイル(&F)";
             // 
             // exitToolStripMenuItem
             // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(171, 34);
-            this.exitToolStripMenuItem.Text = "終了(&X)";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
+            exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            exitToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            exitToolStripMenuItem.Text = "終了(&X)";
+            exitToolStripMenuItem.Click += ExitToolStripMenuItem_Click;
             // 
             // talkToolStripMenuItem
             // 
-            this.talkToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.SpeechSynthesizerToolStripMenuItem,
-            this.BouyomichanToolStripMenuItem,
-            this.VoiceVoxToolStripMenuItem,
-            this.AivisSpeechToolStripMenuItem});
-            this.talkToolStripMenuItem.Name = "talkToolStripMenuItem";
-            this.talkToolStripMenuItem.Size = new System.Drawing.Size(57, 29);
-            this.talkToolStripMenuItem.Text = "Talk";
+            talkToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { SpeechSynthesizerToolStripMenuItem, BouyomichanToolStripMenuItem, VoiceVoxToolStripMenuItem, AivisSpeechToolStripMenuItem });
+            talkToolStripMenuItem.Name = "talkToolStripMenuItem";
+            talkToolStripMenuItem.Size = new System.Drawing.Size(39, 22);
+            talkToolStripMenuItem.Text = "Talk";
             // 
             // SpeechSynthesizerToolStripMenuItem
             // 
-            this.SpeechSynthesizerToolStripMenuItem.Name = "SpeechSynthesizerToolStripMenuItem";
-            this.SpeechSynthesizerToolStripMenuItem.Size = new System.Drawing.Size(260, 34);
-            this.SpeechSynthesizerToolStripMenuItem.Text = "SpeechSynthesizer";
-            this.SpeechSynthesizerToolStripMenuItem.Click += new System.EventHandler(this.speechSynthesizerToolStripMenuItem_Click);
+            SpeechSynthesizerToolStripMenuItem.Name = "SpeechSynthesizerToolStripMenuItem";
+            SpeechSynthesizerToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            SpeechSynthesizerToolStripMenuItem.Text = "SpeechSynthesizer";
+            SpeechSynthesizerToolStripMenuItem.Click += speechSynthesizerToolStripMenuItem_Click;
             // 
             // BouyomichanToolStripMenuItem
             // 
-            this.BouyomichanToolStripMenuItem.Name = "BouyomichanToolStripMenuItem";
-            this.BouyomichanToolStripMenuItem.Size = new System.Drawing.Size(260, 34);
-            this.BouyomichanToolStripMenuItem.Text = "Bouyomi-chan";
-            this.BouyomichanToolStripMenuItem.Click += new System.EventHandler(this.bouyomichanToolStripMenuItem_Click);
+            BouyomichanToolStripMenuItem.Name = "BouyomichanToolStripMenuItem";
+            BouyomichanToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            BouyomichanToolStripMenuItem.Text = "Bouyomi-chan";
+            BouyomichanToolStripMenuItem.Click += bouyomichanToolStripMenuItem_Click;
             // 
             // VoiceVoxToolStripMenuItem
             // 
-            this.VoiceVoxToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.VvFastToolStripMenuItem,
-            this.VvSlowToolStripMenuItem,
-            this.toolStripMenuItem2,
-            this.VvVoiceListToolStripMenuItem});
-            this.VoiceVoxToolStripMenuItem.Name = "VoiceVoxToolStripMenuItem";
-            this.VoiceVoxToolStripMenuItem.Size = new System.Drawing.Size(260, 34);
-            this.VoiceVoxToolStripMenuItem.Text = "VoiceVox";
-            this.VoiceVoxToolStripMenuItem.Click += new System.EventHandler(this.voicevoxToolStripMenuItem_Click);
+            VoiceVoxToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { VvFastToolStripMenuItem, VvSlowToolStripMenuItem, toolStripMenuItem2, VvVoiceListToolStripMenuItem });
+            VoiceVoxToolStripMenuItem.Name = "VoiceVoxToolStripMenuItem";
+            VoiceVoxToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            VoiceVoxToolStripMenuItem.Text = "VoiceVox";
+            VoiceVoxToolStripMenuItem.Click += voicevoxToolStripMenuItem_Click;
             // 
             // VvFastToolStripMenuItem
             // 
-            this.VvFastToolStripMenuItem.Name = "VvFastToolStripMenuItem";
-            this.VvFastToolStripMenuItem.Size = new System.Drawing.Size(182, 34);
-            this.VvFastToolStripMenuItem.Text = "早め";
-            this.VvFastToolStripMenuItem.Click += new System.EventHandler(this.VvSpeedToolStripMenuItem_Click);
+            VvFastToolStripMenuItem.Name = "VvFastToolStripMenuItem";
+            VvFastToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            VvFastToolStripMenuItem.Text = "早め";
+            VvFastToolStripMenuItem.Click += VvSpeedToolStripMenuItem_Click;
             // 
             // VvSlowToolStripMenuItem
             // 
-            this.VvSlowToolStripMenuItem.Name = "VvSlowToolStripMenuItem";
-            this.VvSlowToolStripMenuItem.Size = new System.Drawing.Size(182, 34);
-            this.VvSlowToolStripMenuItem.Text = "遅め";
-            this.VvSlowToolStripMenuItem.Click += new System.EventHandler(this.VvSpeedToolStripMenuItem_Click);
+            VvSlowToolStripMenuItem.Name = "VvSlowToolStripMenuItem";
+            VvSlowToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            VvSlowToolStripMenuItem.Text = "遅め";
+            VvSlowToolStripMenuItem.Click += VvSpeedToolStripMenuItem_Click;
             // 
             // toolStripMenuItem2
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(179, 6);
+            toolStripMenuItem2.Name = "toolStripMenuItem2";
+            toolStripMenuItem2.Size = new System.Drawing.Size(117, 6);
             // 
             // VvVoiceListToolStripMenuItem
             // 
-            this.VvVoiceListToolStripMenuItem.Name = "VvVoiceListToolStripMenuItem";
-            this.VvVoiceListToolStripMenuItem.Size = new System.Drawing.Size(182, 34);
-            this.VvVoiceListToolStripMenuItem.Text = "VoiceList";
-            this.VvVoiceListToolStripMenuItem.Click += new System.EventHandler(this.VvVoiceListToolStripMenuItem_Click);
+            VvVoiceListToolStripMenuItem.Name = "VvVoiceListToolStripMenuItem";
+            VvVoiceListToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            VvVoiceListToolStripMenuItem.Text = "VoiceList";
+            VvVoiceListToolStripMenuItem.Click += VvVoiceListToolStripMenuItem_Click;
             // 
             // AivisSpeechToolStripMenuItem
             // 
-            this.AivisSpeechToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AsFastToolStripMenuItem,
-            this.AsSlowToolStripMenuItem,
-            this.toolStripMenuItem3,
-            this.AsVoiceListToolStripMenuItem});
-            this.AivisSpeechToolStripMenuItem.Name = "AivisSpeechToolStripMenuItem";
-            this.AivisSpeechToolStripMenuItem.Size = new System.Drawing.Size(260, 34);
-            this.AivisSpeechToolStripMenuItem.Text = "AivisSpeech";
-            this.AivisSpeechToolStripMenuItem.Click += new System.EventHandler(this.AivisSpeechToolStripMenuItem_Click);
+            AivisSpeechToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { AsFastToolStripMenuItem, AsSlowToolStripMenuItem, toolStripMenuItem3, AsVoiceListToolStripMenuItem });
+            AivisSpeechToolStripMenuItem.Name = "AivisSpeechToolStripMenuItem";
+            AivisSpeechToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            AivisSpeechToolStripMenuItem.Text = "AivisSpeech";
+            AivisSpeechToolStripMenuItem.Click += AivisSpeechToolStripMenuItem_Click;
             // 
             // AsFastToolStripMenuItem
             // 
-            this.AsFastToolStripMenuItem.Name = "AsFastToolStripMenuItem";
-            this.AsFastToolStripMenuItem.Size = new System.Drawing.Size(182, 34);
-            this.AsFastToolStripMenuItem.Text = "早め";
-            this.AsFastToolStripMenuItem.Click += new System.EventHandler(this.AsSpeedToolStripMenuItem_Click);
+            AsFastToolStripMenuItem.Name = "AsFastToolStripMenuItem";
+            AsFastToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            AsFastToolStripMenuItem.Text = "早め";
+            AsFastToolStripMenuItem.Click += AsSpeedToolStripMenuItem_Click;
             // 
             // AsSlowToolStripMenuItem
             // 
-            this.AsSlowToolStripMenuItem.Name = "AsSlowToolStripMenuItem";
-            this.AsSlowToolStripMenuItem.Size = new System.Drawing.Size(182, 34);
-            this.AsSlowToolStripMenuItem.Text = "遅め";
-            this.AsSlowToolStripMenuItem.Click += new System.EventHandler(this.AsSpeedToolStripMenuItem_Click);
+            AsSlowToolStripMenuItem.Name = "AsSlowToolStripMenuItem";
+            AsSlowToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            AsSlowToolStripMenuItem.Text = "遅め";
+            AsSlowToolStripMenuItem.Click += AsSpeedToolStripMenuItem_Click;
             // 
             // toolStripMenuItem3
             // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(179, 6);
+            toolStripMenuItem3.Name = "toolStripMenuItem3";
+            toolStripMenuItem3.Size = new System.Drawing.Size(117, 6);
             // 
             // AsVoiceListToolStripMenuItem
             // 
-            this.AsVoiceListToolStripMenuItem.Name = "AsVoiceListToolStripMenuItem";
-            this.AsVoiceListToolStripMenuItem.Size = new System.Drawing.Size(182, 34);
-            this.AsVoiceListToolStripMenuItem.Text = "VoiceList";
-            this.AsVoiceListToolStripMenuItem.Click += new System.EventHandler(this.AsVoiceListToolStripMenuItem_Click);
+            AsVoiceListToolStripMenuItem.Name = "AsVoiceListToolStripMenuItem";
+            AsVoiceListToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            AsVoiceListToolStripMenuItem.Text = "VoiceList";
+            AsVoiceListToolStripMenuItem.Click += AsVoiceListToolStripMenuItem_Click;
             // 
             // recToolStripMenuItem
             // 
-            this.recToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tvTestToolStripMenuItem,
-            this.contEndToolStripMenuItem});
-            this.recToolStripMenuItem.Name = "recToolStripMenuItem";
-            this.recToolStripMenuItem.Size = new System.Drawing.Size(56, 29);
-            this.recToolStripMenuItem.Text = "Rec";
+            recToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { tvTestToolStripMenuItem, contEndToolStripMenuItem });
+            recToolStripMenuItem.Name = "recToolStripMenuItem";
+            recToolStripMenuItem.Size = new System.Drawing.Size(38, 22);
+            recToolStripMenuItem.Text = "Rec";
             // 
             // tvTestToolStripMenuItem
             // 
-            this.tvTestToolStripMenuItem.Name = "tvTestToolStripMenuItem";
-            this.tvTestToolStripMenuItem.Size = new System.Drawing.Size(358, 34);
-            this.tvTestToolStripMenuItem.Text = "TvTest";
-            this.tvTestToolStripMenuItem.Click += new System.EventHandler(this.TvTestToolStripMenuItem_Click);
+            tvTestToolStripMenuItem.Name = "tvTestToolStripMenuItem";
+            tvTestToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            tvTestToolStripMenuItem.Text = "TvTest";
+            tvTestToolStripMenuItem.Click += TvTestToolStripMenuItem_Click;
             // 
             // contEndToolStripMenuItem
             // 
-            this.contEndToolStripMenuItem.Name = "contEndToolStripMenuItem";
-            this.contEndToolStripMenuItem.Size = new System.Drawing.Size(358, 34);
-            this.contEndToolStripMenuItem.Text = "番組の終了まで録画を有効にする";
-            this.contEndToolStripMenuItem.Click += new System.EventHandler(this.ContEndToolStripMenuItem_Click);
+            contEndToolStripMenuItem.Name = "contEndToolStripMenuItem";
+            contEndToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
+            contEndToolStripMenuItem.Text = "番組の終了まで録画を有効にする";
+            contEndToolStripMenuItem.Click += ContEndToolStripMenuItem_Click;
             // 
             // toolStripMenuItem1
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            toolStripMenuItem1.Name = "toolStripMenuItem1";
+            toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.ContextMenuStrip = this.notifyIconContextMenuStrip1;
-            this.notifyIcon1.Text = "notifyIcon1";
-            this.notifyIcon1.Visible = true;
-            this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
+            notifyIcon1.ContextMenuStrip = notifyIconContextMenuStrip1;
+            notifyIcon1.Text = "notifyIcon1";
+            notifyIcon1.Visible = true;
+            notifyIcon1.DoubleClick += notifyIcon1_DoubleClick;
             // 
             // notifyIconContextMenuStrip1
             // 
-            this.notifyIconContextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.notifyIconContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.endToolStripMenuItem});
-            this.notifyIconContextMenuStrip1.Name = "notifyIconContextMenuStrip1";
-            this.notifyIconContextMenuStrip1.Size = new System.Drawing.Size(121, 36);
+            notifyIconContextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            notifyIconContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { endToolStripMenuItem });
+            notifyIconContextMenuStrip1.Name = "notifyIconContextMenuStrip1";
+            notifyIconContextMenuStrip1.Size = new System.Drawing.Size(99, 26);
             // 
             // endToolStripMenuItem
             // 
-            this.endToolStripMenuItem.Name = "endToolStripMenuItem";
-            this.endToolStripMenuItem.Size = new System.Drawing.Size(120, 32);
-            this.endToolStripMenuItem.Text = "終了";
-            this.endToolStripMenuItem.Click += new System.EventHandler(this.endToolStripMenuItem_Click);
+            endToolStripMenuItem.Name = "endToolStripMenuItem";
+            endToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            endToolStripMenuItem.Text = "終了";
+            endToolStripMenuItem.Click += endToolStripMenuItem_Click;
+            // 
+            // actionToolStripMenuItem
+            // 
+            actionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { TopToolStripMenuItem });
+            actionToolStripMenuItem.Name = "actionToolStripMenuItem";
+            actionToolStripMenuItem.Size = new System.Drawing.Size(54, 22);
+            actionToolStripMenuItem.Text = "Action";
+            // 
+            // TopToolStripMenuItem
+            // 
+            TopToolStripMenuItem.Name = "TopToolStripMenuItem";
+            TopToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+            TopToolStripMenuItem.Text = "発報があった場合、Topへ表示する";
+            TopToolStripMenuItem.Click += topToolStripMenuItem_Click;
             // 
             // eewwatchmain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1444, 843);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.mainMenuStrip);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Location = new System.Drawing.Point(0, 17);
-            this.MainMenuStrip = this.mainMenuStrip;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "eewwatchmain";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "EewWatch";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.eewwatchmain_FormClosing);
-            this.Load += new System.EventHandler(this.eewwatchmain_Load);
-            this.Resize += new System.EventHandler(this.eewwatchmain_Resize);
-            this.StyleChanged += new System.EventHandler(this.eewwatchmain_StyleChanged_1);
-            this.panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            this.mainMenuStrip.ResumeLayout(false);
-            this.mainMenuStrip.PerformLayout();
-            this.notifyIconContextMenuStrip1.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            ClientSize = new System.Drawing.Size(963, 562);
+            Controls.Add(panel1);
+            Controls.Add(statusStrip1);
+            Controls.Add(mainMenuStrip);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Location = new System.Drawing.Point(0, 17);
+            MainMenuStrip = mainMenuStrip;
+            Name = "eewwatchmain";
+            StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            Text = "EewWatch";
+            FormClosing += eewwatchmain_FormClosing;
+            Load += eewwatchmain_Load;
+            Resize += eewwatchmain_Resize;
+            StyleChanged += eewwatchmain_StyleChanged_1;
+            panel1.ResumeLayout(false);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            splitContainer1.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
+            mainMenuStrip.ResumeLayout(false);
+            mainMenuStrip.PerformLayout();
+            notifyIconContextMenuStrip1.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
@@ -389,6 +376,8 @@
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.ContextMenuStrip notifyIconContextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem endToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem actionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem TopToolStripMenuItem;
     }
 }
 

@@ -74,6 +74,7 @@ namespace eewwatch
         private List<Icon> notifyIconIcon;
         private int iconNo = 0;
         private bool bActive = false;
+        private bool TopView = false;
 
         List<System.Diagnostics.Process> TvtestProcess;
         System.Diagnostics.Process BouyomiProcess;
@@ -115,8 +116,8 @@ namespace eewwatch
 
         private int talktype = SSS_Bouyomichan;
 
-        private int tvtest_Rec = 1;
-        private int tvtest_recend = 1;
+        private bool tvtest_Rec = true;
+        private bool tvtest_RecEnd = true;
 
         //static int INTERVAL_CHANGE_RECMODE = 1;
         //static int INTERVAL_CHANGE_RECMODE = 10000;
@@ -178,8 +179,9 @@ namespace eewwatch
 
             SetTalkMenu(talktype);
 
-            tvTestToolStripMenuItem.Checked = true;
-            contEndToolStripMenuItem.Checked = true;
+            tvTestToolStripMenuItem.Checked = tvtest_Rec;
+            contEndToolStripMenuItem.Checked = tvtest_RecEnd;
+            TopToolStripMenuItem.Checked = TopView;
 
             outputPath = Application.StartupPath;
             logPath = outputPath + "\\log\\";
@@ -331,15 +333,13 @@ namespace eewwatch
 
                         oldValuesCount = oldValues.Count;
                     }
-                    else
-                    {
-                        if (bActive)
-                        {
-                            talk("すべての緊急地震速報の通知が終了しました");
-                            interval = INTERVAL_WAIT;
-                            bActive = false;
-                        }
-                    }
+                }
+
+                if (oldValuesCount == 0 && bActive)
+                {
+                    talk("すべての緊急地震速報の通知が終了しました");
+                    interval = INTERVAL_WAIT;
+                    bActive = false;
                 }
 
                 statusStrip1.Items[1].Text = oldValues.Count > 0 ? "入電中" : "待機中";
@@ -583,6 +583,10 @@ namespace eewwatch
                 if (!newValue.Is_final)
                 {
                     AddFirst();
+                    if (TopView)
+                    {
+                        this.TopLevel = true;
+                    }
                 }
             }
             else
@@ -739,10 +743,13 @@ namespace eewwatch
                 SendMessage(hwnd, WM_COMMAND, CM_RECORD_SHIFT, 0);
             }
 
-            recModeTimer.Interval = INTERVAL_CHANGE_RECMODE * 60 * 1000;
-            recModeTimer.Start();
+            if(tvtest_RecEnd)
+            {
+                recModeTimer.Interval = INTERVAL_CHANGE_RECMODE * 60 * 1000;
+                recModeTimer.Start();
+            }
 
-            if (tvTestToolStripMenuItem.Checked)
+            if (tvtest_Rec)
             {
                 talk("録画を開始しました");
                 if (contEndToolStripMenuItem.Checked)
@@ -752,9 +759,6 @@ namespace eewwatch
             }
         }
 
-        /*
-         * UI関連 
-         */
         private void recModeTimer_Tick(object sender, EventArgs e)
         {
             recModeTimer.Stop();
@@ -848,8 +852,12 @@ namespace eewwatch
                 }
                 listCount--;
             }
-
         }
+
+        /*
+         * Windows Form関連 
+         * 
+         */
 
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -912,6 +920,11 @@ namespace eewwatch
             AsMakeVoiceList();
         }
 
+        /*
+         * メニュー処理
+         * 
+         */
+
         private void speechSynthesizerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetTalkMenu(SSS_SpeechSynthesizer);
@@ -935,11 +948,13 @@ namespace eewwatch
         private void TvTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tvTestToolStripMenuItem.Checked = !tvTestToolStripMenuItem.Checked;
+            tvtest_Rec = tvTestToolStripMenuItem.Checked;
         }
 
         private void ContEndToolStripMenuItem_Click(object sender, EventArgs e)
         {
             contEndToolStripMenuItem.Checked = !contEndToolStripMenuItem.Checked;
+            tvtest_RecEnd = contEndToolStripMenuItem.Checked;
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1182,6 +1197,17 @@ namespace eewwatch
             Close();
         }
 
+        private void topToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TopToolStripMenuItem.Checked = !TopToolStripMenuItem.Checked;
+            TopView = TopToolStripMenuItem.Checked;
+        }
+
+        /*
+         * ステータスバー処理 
+         * 
+         */
+
         private void notifyIcon1_DoubleClick(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized)
@@ -1190,6 +1216,11 @@ namespace eewwatch
                 this.WindowState = FormWindowState.Normal;
             }
         }
+
+        /*
+         * Config処理 
+         * 
+         */
 
         private void readConfig()
         {
@@ -1241,6 +1272,10 @@ namespace eewwatch
             {
                 talktype = SSS_SpeechSynthesizer;
             }
+
+            TopView = readBool("TopView");
+            tvtest_Rec = readBool("Rec");
+            tvtest_RecEnd = readBool("RecEnd");
         }
 
         private int readInt(string key)
@@ -1254,7 +1289,17 @@ namespace eewwatch
                 return -1;
             }
         }
-
+        private bool readBool(string key)
+        {
+            try
+            {
+                return (bool)Settings.Default[key];
+            }
+            catch
+            {
+                return false;
+            }
+        }
         private string readString(string key)
         {
             try
@@ -1297,10 +1342,18 @@ namespace eewwatch
             writeString("AsSpeaker", asSpeaker);
             writeInt("AsTalkSpeed", asTalkSpeed);
 
+            writeBool("TopView", TopView);
+            writeBool("Rec", tvtest_Rec);
+            writeBool("RecEnd", tvtest_RecEnd);
+
             Settings.Default.Save();
         }
 
         private void writeInt(string key, int value)
+        {
+            Settings.Default[key] = value;
+        }
+        private void writeBool(string key, bool value)
         {
             Settings.Default[key] = value;
         }
@@ -1309,6 +1362,11 @@ namespace eewwatch
         {
             Settings.Default[key] = value;
         }
+
+        /*
+         * ログ処理 
+         * 
+         */
 
         private void Log(string msg)
         {
