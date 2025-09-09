@@ -11,7 +11,7 @@ namespace LogUtil
         {
             DateTime dateTime = DateTime.Now;
 
-            Encoding enc = Encoding.UTF8;
+            Encoding enc = new UTF8Encoding(false);
             StreamWriter writer = new StreamWriter(filename, true, enc);
             
             string output = string.Format("{0} : {1}", dateTime.ToString("yyyy-MM-dd HH:mm:ss"), message);

@@ -305,10 +305,12 @@ namespace eewwatch
                         oldValue = null;
                         if (oldValues.ContainsKey(newValue.Report_id))
                         {
+                            Log("## continue");
                             oldValue = oldValues[newValue.Report_id];
                         }
                         else
                         {
+                            Log("## new");
                             bActive = true;
                         }
 
@@ -317,36 +319,52 @@ namespace eewwatch
 
                         if (!newValue.Is_final)
                         {
+                            Log("## not final");
+
                             if (oldValues.ContainsKey(newValue.Report_id))
                             {
+                                Log("## final continue");
                                 oldValues[newValue.Report_id] = newValue;
                             }
                             else
                             {
+                                Log("## final new");
                                 oldValues.Add(newValue.Report_id, newValue);
                             }
                         }
                         else
                         {
+                            Log("## final");
+
                             oldValues.Remove(newValue.Report_id);
                         }
 
                         oldValuesCount = oldValues.Count;
                     }
-                }
+                    else
+                    {
+                        Log("## newValue.Report_id is empty");
 
-                if (oldValuesCount == 0 && bActive)
+                        if (bActive)
+                        {
+                            Log("## talk all end");
+
+                            talk("すべての緊急地震速報の通知が終了しました");
+                            interval = INTERVAL_WAIT;
+                            bActive = false;
+                        }
+                    }
+                }
+                else
                 {
-                    talk("すべての緊急地震速報の通知が終了しました");
-                    interval = INTERVAL_WAIT;
-                    bActive = false;
+                    Log("## newValue is null");
                 }
 
-                statusStrip1.Items[1].Text = oldValues.Count > 0 ? "入電中" : "待機中";
-
+                statusStrip1.Items[1].Text = bActive ? "入電中" : "待機中";
             }
             else
             {
+                Log("## GetWeb is null");
                 statusStrip1.Items[1].Text = "取得エラー";
             }
 
@@ -530,7 +548,7 @@ namespace eewwatch
                 Directory.CreateDirectory(logPath);
             }
 
-            Encoding enc = Encoding.UTF8;
+            Encoding enc = new UTF8Encoding(false);
             StreamWriter writer = new StreamWriter(logPath + newValue.Report_id.ToString() + ".txt", true, enc);
             //            writer.WriteLine(msg.Result.ToString() + Environment.NewLine);
             writer.WriteLine(msg);
@@ -567,7 +585,7 @@ namespace eewwatch
         {
             bool flgFirst = true;
             ListViewItem list = null;
-
+            
             for (int i = 0; i < listView1.Items.Count; i++)
             {
                 if (listView1.Items[i].Text == newValue.Report_id)
@@ -585,6 +603,7 @@ namespace eewwatch
                     AddFirst();
                     if (TopView)
                     {
+                        this.WindowState = FormWindowState.Normal;
                         this.TopLevel = true;
                     }
                 }
@@ -837,7 +856,7 @@ namespace eewwatch
             {
                 if (listCount <= 10)
                 {
-                    Encoding enc = Encoding.UTF8;
+                    Encoding enc = new UTF8Encoding(false);
                     StreamReader reader = new StreamReader(list, enc);
 
                     var msg = reader.ReadLine();
