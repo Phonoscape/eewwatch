@@ -468,6 +468,12 @@ namespace eewwatch
             {
                 if (!newValue.Is_final)
                 {
+                    if (TopView)
+                    {
+                        this.WindowState = FormWindowState.Normal;
+                        this.Show();
+                        this.TopLevel = true;
+                    }
                     SpeakNew();
                 }
             }
@@ -1251,20 +1257,27 @@ namespace eewwatch
             int y = readInt("Y");
             if (y <= 0) y = 100;
             int w = readInt("Width");
-            if (w <= 0) w = 800;
+            if (w <= 0) w = 320;
             int h = readInt("Height");
-            if (h <= 0) h = 600;
+            if (h <= 40) h = 200;
 
             this.Location = new Point(x, y);
             this.Size = new Size(w, h);
 
             int splitterDistance = readInt("SplitterDistance");
-            if (splitterDistance < 0)
+            if (splitterDistance < 1)
             {
-                splitterDistance = 200;
+                splitterDistance = splitContainer1.Panel1MinSize;
             }
 
-            this.splitContainer1.SplitterDistance = splitterDistance;
+            try
+            {
+                splitContainer1.SplitterDistance = splitterDistance;
+            }
+            catch
+            {
+                splitContainer1.SplitterDistance = splitContainer1.Panel1MinSize;
+            }
 
             for (int i = 1; i <= 11; i++)
             {
