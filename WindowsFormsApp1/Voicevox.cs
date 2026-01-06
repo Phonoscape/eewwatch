@@ -10,7 +10,8 @@ namespace Voicevox
         {
             gobiList = new Dictionary<string, string>()
             {
-                {"ずんだもん", "なのだ"}
+                {"ずんだもん", "なのだ"},
+                {"あんこもん", "なのだ"}
             };
 
             intnationList = new Dictionary<string, double>()
