@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net.Http;
@@ -9,6 +10,7 @@ using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Uno;
 using Windows.UI.Notifications;
 
 namespace eewwatch
@@ -21,6 +23,8 @@ namespace eewwatch
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern int VkKeyScan(char ch);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool EnumWindows(IntPtr lpEnumFunc, int lParam);
 
         //       static String URI = "http://www.kmoni.bosai.go.jp/new/webservice/hypo/eew/";
         //static String URI = "http://www.kmoni.bosai.go.jp/webservice/hypo/eew/";
@@ -112,7 +116,7 @@ namespace eewwatch
 
         static int INTERVAL_WAIT = 2000;        // ms
         static int INTERVAL_ACTIVE = 1000;      // ms
-        static int INTERVAL_CHANGE_RECMODE = 5; // min
+        static int INTERVAL_CHANGE_RECMODE = 10; // min
 
         private int talktype = SSS_Bouyomichan;
 
@@ -891,7 +895,18 @@ namespace eewwatch
 
             var filename = logPath + sel.SubItems[0].Text + ".txt";
 
-            System.Diagnostics.Process.Start(filename);
+            try
+            {
+                //System.Diagnostics.Process.Start(filename);
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.FileName = filename;
+                psi.UseShellExecute = true; // 既定のアプリケーションで開くために必要
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ログファイルのオープンに失敗しました。\n" + ex.Message);
+            }
         }
 
         private void eewwatchmain_FormClosing(object sender, FormClosingEventArgs e)
