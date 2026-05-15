@@ -14,5 +14,11 @@
     <Compile Update="eewwatchmain.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="UserSettings\UserSettingDiscord.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserSettings\UserSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

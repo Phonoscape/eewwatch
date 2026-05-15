@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EEWWatch.Properties {
+namespace UserSetting.Properties {
     using System;
     
     

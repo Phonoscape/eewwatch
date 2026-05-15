@@ -1,4 +1,4 @@
-﻿using EEWWatch.Properties;
+﻿using UserSetting.Properties;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,9 +26,9 @@ namespace eewwatch
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool EnumWindows(IntPtr lpEnumFunc, int lParam);
 
-        //       static String URI = "http://www.kmoni.bosai.go.jp/new/webservice/hypo/eew/";
-        //static String URI = "http://www.kmoni.bosai.go.jp/webservice/hypo/eew/";
-        static String URI = "https://www.lmoni.bosai.go.jp/monitor/webservice/hypo/eew/";
+        //static String URI = "http://www.kmoni.bosai.go.jp/new/webservice/hypo/eew/";
+        static String URI = "http://www.kmoni.bosai.go.jp/webservice/hypo/eew/";
+        //static String URI = "https://www.lmoni.bosai.go.jp/monitor/webservice/hypo/eew/";
 
         string msg;
         Eew eew;
@@ -170,8 +170,8 @@ namespace eewwatch
             listView1.FullRowSelect = true;
 
             notifyIconIcon = new List<Icon>();
-            notifyIconIcon.Add(EEWWatch.Properties.Resources.Icon_normal);
-            notifyIconIcon.Add(EEWWatch.Properties.Resources.Icon_warning);
+            notifyIconIcon.Add(UserSetting.Properties.Resources.Icon_normal);
+            notifyIconIcon.Add(UserSetting.Properties.Resources.Icon_warning);
 
             notifyIcon1.Text = this.Text;
             notifyIcon1.Icon = notifyIconIcon[0];
@@ -595,7 +595,7 @@ namespace eewwatch
         {
             bool flgFirst = true;
             ListViewItem list = null;
-            
+
             for (int i = 0; i < listView1.Items.Count; i++)
             {
                 if (listView1.Items[i].Text == newValue.Report_id)
@@ -772,7 +772,7 @@ namespace eewwatch
                 SendMessage(hwnd, WM_COMMAND, CM_RECORD_SHIFT, 0);
             }
 
-            if(tvtest_RecEnd)
+            if (tvtest_RecEnd)
             {
                 recModeTimer.Interval = INTERVAL_CHANGE_RECMODE * 60 * 1000;
                 recModeTimer.Start();
@@ -1241,6 +1241,11 @@ namespace eewwatch
         {
             TopToolStripMenuItem.Checked = !TopToolStripMenuItem.Checked;
             TopView = TopToolStripMenuItem.Checked;
+        }
+
+        private void testRecToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            recTv();
         }
 
         /*
